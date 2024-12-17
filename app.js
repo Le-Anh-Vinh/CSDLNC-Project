@@ -2,8 +2,10 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import config from "./config/config.js";
+import session from "express-session";
 import { connectDB, closeDB } from "./config/db.js";
 import router from "./routes/router.js";
+import dotenv from "dotenv";
 
 const app = express();
 connectDB();
@@ -11,6 +13,12 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}))
 
 app.set("view engine", "ejs");
 app.set("views", "./views");

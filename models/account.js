@@ -1,13 +1,14 @@
 import sql from "mssql";
 
-const account = {
+const accountData = {
     login: async (username, password) => {
         try {
             const ps = new sql.PreparedStatement();
-            ps.input('username', sql.Char);
-            ps.input('password', sql.Char);
+            ps.input('username', sql.VarChar);
+            ps.input('password', sql.VarChar);
             await ps.prepare('SELECT * FROM TAI_KHOAN WHERE TenDangNhap = @username AND MatKhau = @password');
             const result = await ps.execute({ username: username, password: password })
+            await ps.unprepare();
             if (result.recordset.length > 0) {
                 console.log('Login successfully:', result.recordset[0]);
                 return result.recordset[0];
@@ -45,4 +46,4 @@ const account = {
     }
 }
 
-export default account;
+export default accountData;
