@@ -5,7 +5,7 @@ import dishData from "../models/dish.js";
 const authController = {
     getAuth: (req, res) => {
         try {
-            res.render('login');
+            res.render('authentication');
         } catch (error) {
             next(new MyError(404, "Can't found log in page"));
         }
