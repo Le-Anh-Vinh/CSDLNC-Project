@@ -6,14 +6,16 @@
 ---
 
 ## Chức năng chính
-1. **Quản lý khách hàng**  
-   - Thêm, sửa, xóa và tìm kiếm thông tin khách hàng.  
-2. **Quản lý doanh nghiệp (chủ nhà hàng)**  
-   - Đăng ký nhà hàng và các món ăn.  
-3. **Quản lý đơn hàng**  
-   - Tạo đơn hàng thường và đơn hàng giải trí có dịch vụ kèm theo.  
-4. **Quản lý nghệ sĩ giải trí**  
-   - Lên lịch và phân công nghệ sĩ phục vụ đơn hàng giải trí.  
+1. **Đạt hàng Online**  
+   - Thêm, sửa, xóa món ăn trong giỏ hàng.
+   - Đặt hàng  
+2. **Đặt món tại chỗ**  
+   - Thêm, sửa, xóa món ăn trong giỏ hàng.
+   - Đặt món
+3. **Đặt bàn**  
+   - Đặt bàn cùng món ăn kèm theo.
+4. **Quản lý thẻ khách hàng**
+   - Thêm, xóa, sửa thẻ theo yêu cầu khách hàng.
 5. **Báo cáo thống kê**  
    - Thống kê số lượng món ăn và doanh thu theo chi nhánh, khoảng thời gian.
 
