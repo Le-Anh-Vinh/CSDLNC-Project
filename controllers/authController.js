@@ -1,5 +1,6 @@
-import account from "../models/account.js";
+import accountData from "../models/account.js";
 import MyError from "../cerror.js";
+import dishData from "../models/dish.js";
 
 const authController = {
     getAuth: (req, res) => {
@@ -13,11 +14,12 @@ const authController = {
     login: async (req, res) => {
         try {
             const { username, password } = req.body;
-            const user = await account.login(username, password);
+            const user = await accountData.login(username, password);
+            const dish = await dishData.getDish(1);
             if (user) {
-                res.status(200).json({ status: true, user: user });
+                res.status(200).json({ status: true, user: user, dish: dish });
             } else {
-                res.status(401).json({ status: true, message: "Invalid username or password" });
+                res.status(401).json({ status: false, message: "Invalid username or password" });
             }
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
@@ -27,8 +29,17 @@ const authController = {
     signup: async (req, res) => {
         try {
             const { username, password, info } = req.body;
-            const user = await account.signup(username, password, info);
+            const user = await accountData.signup(username, password, info);
             res.status(200).json({ status: true, user: user });
+        } catch (error) {
+            res.status(500).json({ status: false, error: error.message });
+        }
+    },
+
+    getInfo: async (req, res) => {
+        try {
+            const uid = req.params.uid;
+            res.render('getUserInfo', { uid });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }

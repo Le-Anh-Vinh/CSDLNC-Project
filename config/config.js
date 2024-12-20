@@ -9,7 +9,8 @@ const {
     HOST_URL,
     USER,
     PASSWORD,
-    DATABASE
+    DATABASE,
+    SESSION_SECRET
 } = process.env;
 
 assert(PORT, "PORT is required");
