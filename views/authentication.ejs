@@ -416,19 +416,15 @@
         async function login(event) {
             event.preventDefault();
             const loginButton = document.getElementById('loginButton');
-            const email = document.getElementById('loginEmail').value.trim();
+            const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
 
-            if (!regexEmail.test(email)) {
-                alert("Invalid email format.");
-                return;
-            }
             if (password === "") {
                 alert("Password cannot be empty.");
                 return;
             }
 
-            const user = { email: email, password: password };
+            const user = { username: username, password: password };
 
             try {
                 loginButton.disabled = true;
@@ -441,11 +437,9 @@
                 });
 
                 if (response.ok) {
-                    const { user, role } = await response.json();
-                    console.log(role);
-                    console.log(user.displayName);
+                    const user = await response.json();
                     alert('Login successfully!');
-                    sessionStorage.setItem('user', JSON.stringify({ uid: user.uid, role: role}));
+                    sessionStorage.setItem('user', JSON.stringify({ MaTK: user, role: 'customer'}));
                     window.location.href = `/${user.uid}`;
                 } else {
                     const error = await response.json();
@@ -468,7 +462,7 @@
             <h2>Welcome</h2>
             <label>
                 <span>Email</span>
-                <input type="email" id="loginEmail" />
+                <input id="loginUsername" />
             </label>
             <label>
                 <span>Password</span>
