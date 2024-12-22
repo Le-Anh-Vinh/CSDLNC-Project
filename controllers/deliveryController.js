@@ -1,4 +1,4 @@
-import deliveryData from "../models/delivery.js";
+import deliveryData from "../models/deliveryOrder.js";
 import MyError from "../cerror.js";
 
 const deliveryController = {
@@ -46,7 +46,20 @@ const deliveryController = {
         try {
             const { Address, Phone, Note, MaTK, MaCN} = req.body;
             const result = await deliveryData.create(Address, Phone, Note, MaTK, MaCN);
-            for (const item of req.session.cart) {
+            
+            let cartItems = [];
+            if (req.session.cart) {
+                if (Array.isArray(req.session.cart)) {
+                    cartItems = req.session.cart;
+                } else {
+                    cartItems.push(req.session.cart);
+                }
+            } else {
+                res.status(404).json({ status: false, message: "Cart is empty" });
+                return;
+            }
+
+            for (const item of cartItems) {
                 const { dishID, quantity } = item;
                 await deliveryData.addDish(result, dishID, quantity);
             }
