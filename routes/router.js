@@ -8,9 +8,13 @@ import invoiceController from "../controllers/invoiceController.js";
 const router = express.Router();
 
 // auth
+// customer
 router.get('/', authController.getAuth);
 router.post('/login', authController.login);
-router.post('/signup', authController.signup);  //
+router.post('/signup', authController.signup);
+// staff
+router.get('/staffLogin', authController.getStaffLogin);
+router.post('/staffLogin', authController.staffLogin);
 
 // cart
 // using session
