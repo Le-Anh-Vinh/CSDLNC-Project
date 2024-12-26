@@ -69,7 +69,7 @@ const spotOrderData = {
             console.log('ERROR IN GETTING BY AGENCY: ', error);
             return null;
         }
-    }
+    },
 };
 
 export default spotOrderData;

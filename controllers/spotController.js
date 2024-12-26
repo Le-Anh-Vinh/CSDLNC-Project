@@ -64,7 +64,7 @@ const spotController = {
         } catch (error) {
             res.status(404).json({ status: false, error: error.message });
         }
-    }
+    },
 };
 
 export default spotController;

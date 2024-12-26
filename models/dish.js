@@ -77,7 +77,44 @@ const dishData = {
             console.log('ERROR IN GETTING STATISTICS BY AGENCY: ', error);
             return null;
         }
-    }
+    },
+
+    search: async (MaCN, keyword) => {
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaCN', sql.Int);
+            ps.input('Keyword', sql.NVarChar);
+            await ps.prepare(`
+                SELECT MA.TenMA, MA.GiaMA, MA.MoTa
+                FROM MON_AN MA
+                    JOIN THUC_DON_MON_AN TDMA ON MA.MaMA = TDMA.MaMA
+                    JOIN CHI_NHANH CN ON TDMA.MaTD = CN.MaTDSuDDung
+                WHERE CN.MaCN = @MaCN AND 
+                      MA.TenMA LIKE '%' + @Keyword + '%' AND
+                      MA.HoTroGiaoHang = 1
+            `);
+            const result = await ps.execute({ MaCN, Keyword: keyword });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN SEARCHING: ', error);
+            return null;
+        }
+    },
+
+    priceOfDish: async (MaMA) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaMA', sql.Int);
+            await ps.prepare('SELECT GiaMA FROM MON_AN WHERE MaMA = @MaMA');
+            const result = await ps.execute({ MaMA });
+            await ps.unprepare();
+            return result.recordset[0];
+        } catch (error) {
+            console.log('ERROR IN GETTING PRICE OF DISH: ', error);
+            return null;
+        }
+    },
 }
 
 export default dishData;
