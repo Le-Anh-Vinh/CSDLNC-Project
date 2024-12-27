@@ -1,0 +1,271 @@
+* {
+    box-sizing: border-box;
+  }
+   
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background: linear-gradient(45deg, #d1b6f5, rgb(120, 135, 209));
+    font-family: 'Roboto', sans-serif;
+  }
+
+  .shopping-cart {
+    width: 780px;
+    height: fit-content;
+    margin: 50px auto;
+    background: #FFFFFF;
+    box-shadow: 1px 2px 3px 0px rgba(0,0,0,0.10);
+    border-radius: 6px;
+   
+    display: flex;
+    flex-direction: column;
+  }
+
+  .title {
+    height: 60px;
+    border-bottom: 2px solid #e2d6fe;
+    padding: 20px 30px;
+    color: #5E6977;
+    font-size: 20px;
+    font-weight: 400;
+  }
+   
+  .item {
+    padding: 0px 30px;
+    height: 78px;
+    display: flex;
+  }
+
+  .item input{
+    width: 20px;
+  }
+   
+  .item:not(:first-child):not(:last-child) {
+    border-top: 1px solid #e2d6fe;
+    border-bottom: 1px solid #e2d6fe;
+  }
+
+  .item:last-child{
+    border-bottom: 2px solid #e2d6fe;
+    border-top: 1px solid #e2d6fe;
+  }
+  
+  .buttons {
+    position: relative;
+    padding-top: 26px;
+    left: 42px;
+    right: 2px;
+    width: fit-content;
+    height: fit-content;
+  }
+  .delete-btn,
+  .like-btn {
+    display: inline-block;
+    Cursor: pointer;
+  }
+
+  .delete-btn {
+    width: 18px;
+    height: 17px;
+    background: url("/img/close-svgrepo-com.svg") no-repeat center;
+  }
+
+  .is-active {
+    animation-name: animate;
+    animation-duration: .8s;
+    animation-iteration-count: 1;
+    animation-timing-function: steps(28);
+    animation-fill-mode: forwards;
+  }
+   
+  @keyframes animate {
+    0%   { background-position: left;  }
+    50%  { background-position: right; }
+    100% { background-position: right; }
+  }
+   
+  /* Let’s add some basic style to  product name and description. */
+  .description {
+    padding-top: 10px;
+    margin-right: 60px;
+    width: 115px;
+    margin-left: 32px;
+    position: relative;
+    top: 16px;
+  }
+   
+  .description span {
+    display: block;
+    /* font-size: 14px; */
+    color: #43484D;
+    /* font-weight: 400; */
+  }
+
+  .quantity {
+    padding-top: 20px;
+    margin-right: 60px;
+    margin-left: 132px;
+    position: relative;
+    top: 7px;
+  }
+  .quantity input {
+    -webkit-appearance: none;
+    border: none;
+    text-align: center;
+    width: 32px;
+    font-size: 16px;
+    color: #43484D;
+    font-weight: 300;
+  }
+   
+  button[class*=btn] {
+    width: 30px;
+    height: 30px;
+    background-color: #E1E8EE;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+   
+  button:focus,
+  input:focus {
+    outline:0;
+  }
+
+  .total-price {
+    width: 100px;
+    padding-top: 27px;
+    text-align: center;
+    font-size: 16px;
+    color: #43484D;
+    font-weight: 300;
+    margin-left: 58px;
+  }
+
+  @media (max-width: 800px) {
+    .shopping-cart {
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+    }
+    .item {
+      height: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .image img {
+      width: 50%;
+    }
+    .image,
+    .quantity,
+    .description {
+      width: 100%;
+      text-align: center;
+      margin: 6px 0;
+    }
+  }
+
+.plus-btn__img{
+    width: 10px;
+    height: 10px;
+}
+
+.minus-btn__img{
+    width: 10px;
+    height: 10px;
+}
+
+.nav-bar{
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0px;
+  border-bottom: 1px solid #e2d6fe;
+}
+
+.nav-bar label{
+  position: relative;
+}
+
+.product_name{
+  left: 60px;
+}
+
+.product_price{
+  right: 130px;
+}
+
+.product_quantity{
+  left: -70px;
+}
+
+.product_name_confirm_product{
+left: 100px;
+}
+
+.product_price_confirm_product{
+right: 150px;
+}
+
+.product_quantity_confirm_product{
+left: -45px;
+}
+
+.confirm-section{
+  border-top: 1px solid #e2d6fe;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  font-size: larger;
+  padding-bottom: 8px;
+}
+
+.confirm-section__price{
+  margin: auto;
+  position: relative;
+  padding: 10px 0;
+}
+
+.final-price{
+  left: 64px;
+  position: relative;
+  padding-top: 10px;
+}
+
+.confirm-section__btn{
+  margin: auto;
+  position: relative;
+  padding-bottom: 14px;
+  width: 80%;
+  height: 45px;
+}
+
+.checkout-button{
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #e2d6fe;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.checkout-button:hover{
+  background-color: #d5c4fe;
+}
+
+
+.product_unit-price{
+  left: -10px;
+}
+
+.product_unit-price_confirm_product{
+    left: 20px;
+}
+
+.unit-price{
+  position: relative;
+  margin-left: -24px;
+  padding-top: 27px;
+}

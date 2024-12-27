@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/UserCart.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="shopping-cart">
+        <!-- Title -->
+        <div class="title">
+          Shopping Cart
+        </div>
+
+        <div class="nav-bar">
+          <label class="product_name">Name</label>
+          <label class="product_unit-price">Unit price</label>
+          <label class="product_quantity">Quantity</label>
+          <label class="product_price">Price</label>
+        </div>
+
+        <% products.forEach((item) => { %>
+          <div class="item" data-product-id="<%= item.product_id %>">
+
+              <div class="description">
+                <span><%= item.productDetails.name.length > 20 ? item.productDetails.name.slice(0, 20) + '...' : item.productDetails.name %></span>
+                <!-- <span>Pizza</span> -->
+              </div>
+              
+              <div class="unit-price">
+                <%= item.productDetails.price %> VNĐ
+                <!-- 100000 VNĐ -->
+              </div>
+
+              <div class="quantity">
+  
+                  <input type="text" name="name" value="<%= item.quantity %>">
+                  <!-- <input type="text" name="name" value="1"> -->
+  
+              </div>
+              <div class="total-price"><%= item.productDetails.price * item.quantity %> VNĐ</div>
+              <!-- <div class="total-price">100000 VNĐ</div> -->
+          
+              <div class="buttons">
+                  <span class="delete-btn"></span>
+              </div>
+          </div>
+        <% }); %>
+        <div class="confirm-section">
+          <div class="confirm-section__price">
+            <div class="label">TOTAL PRICE (0 Products)</div>
+            <div class="final-price">0 VNĐ</div>
+          </div>
+          <div class="confirm-section__btn">
+            <button class="checkout-button">PURCHASE</button>
+          </div>
+        </div>
+      </div>
+</body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  // tính tổng tiền
+  function updateTotalPrice() {
+    let total = 0;
+
+    const items = document.querySelectorAll('.item');
+
+    items.forEach(item => {
+      const priceElement = item.querySelector('.total-price');
+      if (priceElement) {
+        const priceText = priceElement.textContent;
+        const priceValue = parseFloat(priceText.replace(/[^0-9]/g, '')) || 0; // Extract numerical value
+        total += priceValue;
+      }
+    });
+
+    const totalPriceElement = document.querySelector('.final-price');
+    const totalProductsLabel = document.querySelector('.label');
+
+    totalPriceElement.textContent = `${total.toLocaleString()} VNĐ`;
+    totalProductsLabel.textContent = `TOTAL PRICE (${items.length} Products)`;
+  }
+
+  async function sendDeleteRequest(productId) {
+    try {
+      const response = await fetch('/delete-product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete the product.');
+      }
+
+      console.log('Product deleted successfully.');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  // khi nhấn nút xóa, gửi thông báo lên server và tính lại tổng tiền
+  const deleteButtons = document.querySelectorAll('.delete-btn');
+
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      const item = button.closest('.item');
+
+      if (item) {
+        const productId = item.getAttribute('data-product-id');
+
+        if (productId) {
+          sendDeleteRequest(productId);
+        }
+
+        item.remove();
+        updateTotalPrice();
+      }
+    });
+  });
+
+  updateTotalPrice();
+});
+
+
+</script>
+
+
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+
+        if (!user) {
+            window.location.href = '/auth';
+        } else {
+            console.log('User ID:', user.uid);
+            console.log('User Role:', user.role);
+        }
+    });
+</script> -->
+
+</html>

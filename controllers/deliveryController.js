@@ -36,7 +36,7 @@ const deliveryController = {
 
     getCart: async (req, res) => {
         try {
-            res.render('cart', { cart: req.session.cart });
+            res.render('UserCart', { cart: req.session.cart });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }
