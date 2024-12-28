@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="/style/main.css" />
+    <link rel="stylesheet" href="/style/base.css" />
+    <link rel="stylesheet" href="/style/grid.css" />
+    <link rel="stylesheet" href="/style/dish.css" />
+    <link rel="stylesheet" href="/style/responsive.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="grid wide">
+          <nav class="header__navbar hide-on-mobile-tablet">
+            <ul class="header__navbar-list">
+              <li
+                class="header__navbar-item header__navbar-item--separate"
+              >
+                Chăm sóc khách hàng
+              </li>
+              <li class="header__navbar-item">
+                <span class="header__navbar-title--no-pointer">Kết nối</span>
+
+                <a href="" class="header__navbar-icon-link">
+                  <i class="header__navbar-icon fab fa-facebook"></i>
+                </a>
+                <a href="" class="header__navbar-icon-link">
+                  <i class="header__navbar-icon fab fa-instagram"></i>
+                </a>
+              </li>
+            </ul>
+            <ul class="header__navbar-list">
+              <li class="header__navbar-item">
+                <a href="" class="header__navbar-item-non-link">
+                  <i class="header__navbar-icon fas fa-check-circle"></i>
+                  Confirm Order
+                </a>
+              </li>              
+              <li class="header__navbar-item">
+                <a href="" class="header__navbar-item-non-link">
+                  <i class="header__navbar-icon fas fa-shopping-cart"></i>
+                    Cart
+                </a>
+              </li>
+              <li class="header__navbar-item header__navbar-user">
+                <img
+                  src="/img/user_img.png"
+                  alt="avatar"
+                  class="header__navbar-user-img"
+                />
+
+                <span class="header__navbar-user-name">
+                  LMEO
+                </span>
+
+                <ul class="header__navbar-user-menu">
+                  <li class="header__navbar-user-item">
+                    <a href="">Tài khoản của tôi</a>
+                  </li>
+                  <li class="header__navbar-user-item">
+                    <a href="">Địa chỉ của tôi</a>
+                  </li>
+                  <li class="header__navbar-user-item">
+                    <a href="">Đơn mua</a>
+                  </li>
+                  <li
+                    class="header__navbar-user-item header__navbar-user-item--separate"
+                  >
+                    <a href="">Đăng xuất</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </nav>
+
+          <!-- Header with Search -->
+          <div class="header-with-search">
+            <label for="mobile-search-checkbox" class="header__mobile-search">
+              <i class="header__mobile-search-icon fas fa-search"></i>
+            </label>
+
+            <!-- Header Logo -->
+            <div class="header__logo hide-on-tablet">
+                <a href="/" class="header__logo-link">
+                <img class="header__logo-img" src="/img/logo_img.png" alt="Custom Logo">
+                </a>
+            </div>
+            <input
+              type="checkbox"
+              hidden
+              id="mobile-search-checkbox"
+              class="header__search-checkbox"
+            />
+            <!-- Header Search -->
+            <div class="header__search ">
+              <div class="header__search-input-wrap">
+                <input
+                  type="text"
+                  class="header__search-input"
+                  placeholder="Search"
+                />
+
+                <!-- Search history -->
+                <div class="header__search-history">
+                  <h3 class="header__search-history-heading">
+                    Lịch sử tìm kiếm
+                  </h3>
+                  <ul class="header__search-history-list">
+                    <li class="header__search-history-item">
+                      <a href="">Áo T1</a>
+                    </li>
+                    <li class="header__search-history-item">
+                      <a href="">2 sao của GenG</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              
+              <button class="header__search-btn">
+                <i class="header__search-btn-icon fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <div class="app__container">
+        <div class="grid wide">
+          <div class="row sm-gutter app__content">
+            <div class="col l-12 m-12 c-12">
+
+              <!-- Product -->
+              <div class="menu-list">
+                <a href="#" class="menu-item">
+                  <span class="dish-name">SHUSHI Bò kho</span>
+                  <span class="dish-description">Khai vị bổ dưỡng</span>
+                  <span class="dish-price">20.000 VND</span>
+                  <div class="quantity-control">
+                    <button class="decrease">-</button>
+                    <span class="quantity">1</span>
+                    <button class="increase">+</button>
+                  </div>
+                </a>
+                <a href="#" class="menu-item">
+                  <span class="dish-name">Bánh xèo JAVASCRIPT</span>
+                  <span class="dish-description">Giòn rụm đặc sắc</span>
+                  <span class="dish-price">30.000 VND</span>
+                  <div class="quantity-control">
+                    <button class="decrease">-</button>
+                    <span class="quantity">1</span>
+                    <button class="increase">+</button>
+                  </div>
+                </a>
+                <a href="#" class="menu-item">
+                  <span class="dish-name">Mì Ramen</span>
+                  <span class="dish-description">Dai ngon hảo hạng</span>
+                  <span class="dish-price">50.000 VND</span>
+                  <div class="quantity-control">
+                    <button class="decrease">-</button>
+                    <span class="quantity">1</span>
+                    <button class="increase">+</button>
+                  </div>
+                </a>
+                <a href="#" class="menu-item">
+                  <span class="dish-name">Cơm cuộn</span>
+                  <span class="dish-description">Thanh đạm truyền thống</span>
+                  <span class="dish-price">25.000 VND</span>
+                  <div class="quantity-control">
+                    <button class="decrease">-</button>
+                    <span class="quantity">1</span>
+                    <button class="increase">+</button>
+                  </div>
+                </a>
+                <a href="#" class="menu-item">
+                  <span class="dish-name">Gà Teriyaki</span>
+                  <span class="dish-description">Sốt đậm đà</span>
+                  <span class="dish-price">45.000 VND</span>
+                  <div class="quantity-control">
+                    <button class="decrease">-</button>
+                    <span class="quantity">1</span>
+                    <button class="increase">+</button>
+                  </div>
+                </a>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="grid wide footer__content">
+          <div class="row">
+            <div class="col l-2-8 m-4 c-6">
+              <h3 class="footer__heading">CHĂM SÓC KHÁCH HÀNG</h3>
+              <ul class="footer-list">
+                <li class="footer-item">
+                  <a href="#" class="footer-item__link">Trung Tâm Trợ Giúp</a>
+                </li>
+                <li class="footer-item">
+                  <a href="#" class="footer-item__link">Hướng Dẫn Mua Hàng</a>
+                </li>
+                <li class="footer-item">
+                  <a href="#" class="footer-item__link"
+                    >Chính Sách Vận Chuyển</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div class="col l-2-8 m-4 c-6">
+              <h3 class="footer__heading">VỀ CHÚNG TÔI</h3>
+              <ul class="footer-list">
+                <li class="footer-item">
+                  <a href="#" class="footer-item__link">Giới Thiệu Về Shop</a>
+                </li>
+                <li class="footer-item">
+                  <a href="#" class="footer-item__link">Tuyển Dụng</a>
+                </li>
+                <li class="footer-item">
+                  <a href="#" class="footer-item__link">Điều Khoản Shop</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col l-2-4 m-8 c-12">
+              <h3 class="footer__heading">ĐỊA CHỈ CỦA TRANG WEB</h3>
+              <div class="footer__download">
+                <img
+                  src="/img/qr_code.png"
+                  alt="Download QR"
+                  class="footer__dowload-qr"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer__bottom">
+          <div class="grid wide">
+            <p class="footer__text">
+              © 2024 Triết lí cuộc sống - Đời là bể khổ, qua được bể khổ là qua đời
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+
+<!-- document.addEventListener('DOMContentLoaded', () => {
+  const menuItems = document.querySelectorAll('.menu-item');
+
+  menuItems.forEach(item => {
+    const decreaseButton = item.querySelector('.decrease');
+    const increaseButton = item.querySelector('.increase');
+    const quantitySpan = item.querySelector('.quantity');
+
+    decreaseButton.addEventListener('click', () => {
+      let currentQuantity = parseInt(quantitySpan.textContent, 10);
+      if (currentQuantity > 1) {
+        quantitySpan.textContent = currentQuantity - 1;
+      }
+    });
+
+    increaseButton.addEventListener('click', () => {
+      let currentQuantity = parseInt(quantitySpan.textContent, 10);
+      quantitySpan.textContent = currentQuantity + 1;
+    });
+  });
+}); -->
