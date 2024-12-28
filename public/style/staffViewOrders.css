@@ -142,6 +142,22 @@
     margin-left: 8px;
   }
 
+  .num_people {
+    /* width: 100px;
+    padding-top: 18px;
+    text-align: center;
+    font-size: 16px;
+    color: #43484D;
+    font-weight: 300;
+    margin-left: 8px; */
+
+    padding-top: 20px;
+    margin-right: 60px;
+    margin-left: 102px;
+    position: relative;
+    top: 7px;
+  }
+
   @media (max-width: 800px) {
     .shopping-cart {
       width: 100%;
@@ -192,6 +208,10 @@
 
 .deli_address{
   right: 298px;
+}
+
+.deli_address{
+  right: 250px;
 }
 
 .date_create{
