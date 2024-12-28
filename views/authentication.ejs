@@ -440,7 +440,7 @@
                     const user = await response.json();
                     alert('Login successfully!');
                     sessionStorage.setItem('user', JSON.stringify({ MaTK: user, role: 'customer'}));
-                    window.location.href = `/${user.uid}`;
+                    window.location.href = `/${user.user}`;
                 } else {
                     const error = await response.json();
                     alert(`Failed to login, error: ${error.error || 'Unknown error'}`);
