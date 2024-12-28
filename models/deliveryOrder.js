@@ -60,7 +60,7 @@ const deliveryData = {
         }
     },
 
-    confirm: async (MaPTN, MaNV) => {
+    confirmOrder: async (MaPTN, MaNV) => {
         try {
             const ps = new sql.PreparedStatement();
             ps.input('MaPTN', sql.Int);
@@ -69,7 +69,21 @@ const deliveryData = {
             await ps.execute({ MaPTN, MaNV });
             await ps.unprepare();
         } catch (error) {
-            console.log('ERROR IN CONFIRMING DELIVERY: ', error);
+            console.log('ERROR IN CONFIRMING DELIVERY ORDER: ', error);
+            return null;
+        }
+    },
+
+    getByCustomer: async (MaTK) => {
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaTK', sql.Int);
+            await ps.prepare('SELECT PTN.MaPTN, PTN.DiaChiGiaoHang, PTN.SDTDatHang, PTN.NgayLapPTN FROM PHIEU_TAN_NHA PTN JOIN HOA_DON_GIAO_TAN_NHA HDGTN ON PTN.MaPTN = HDGTN.MaPTNThanhToan WHERE PTN.MaTKTao = @MaTK AND HDGTN.HoanThanhThanhToan = 1 AND NOT EXISTS (SELECT 1 FROM DANH_GIA_ONLINE WHERE MaPTN = PTN.MaPTN)');
+            const result = await ps.execute({ MaTK });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN GETTING INVOICE BY CUSTOMER: ', error);
             return null;
         }
     },
