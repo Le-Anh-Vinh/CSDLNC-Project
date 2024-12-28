@@ -19,8 +19,20 @@ const userController = {
         try {
             const MaCN = req.params.MaCN;
             const result = await deliveryData.getPendingByAgency(MaCN);
+            
+            if (!Array.isArray(result)) {
+                result = [result];
+            }
+
+            const ordersWithDetails = await Promise.all(result.map(async (order) => {
+                const itemsWithDetails = await dishData.getByOnlineOrder(order.MaPTN);
+                return {
+                    ...order,
+                    items: itemsWithDetails
+                };
+            }));
             const employees = await employeeData.getByAgency(MaCN);
-            res.render('deliveryOrder', { orders: result, employees: employees });
+            res.render('staffViewOrders', { Orders: ordersWithDetails, employees: employees });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }
@@ -28,7 +40,7 @@ const userController = {
 
     confirmOrder: async (req, res) => {
         try {
-            const { MaPTN, MaNV } = req.body;
+            const { MaNV, MaPTN } = req.body;
             await deliveryData.confirmOrder(MaPTN, MaNV);
             res.status(200).json({ status: true});
         } catch (error) {

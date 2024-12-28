@@ -45,8 +45,8 @@ router.get('/user/search/:MaCN', userController.search); // search for dishes by
 // employee
 // online
 router.get('/employee/online/:MaCN', userController.getDelivery);  // get all pending delivery orders of an agency
-router.put('/employee/online/confirmOrder/:MaCN', userController.confirmOrder); // staff confirms delivery order
-router.put('/employee/online/confirmDelivery/:MaCN', userController.confirmDelivery); // staff confirms payment
+router.put('/employee/online/confirmOrder', userController.confirmOrder); // staff confirms delivery order
+router.put('/employee/online/confirmDelivery', userController.confirmDelivery); // staff confirms payment
 // on the spot
 router.get('/employee/spot/:MaCN', userController.getSpot); // get all pending spot orders of an agency
 

@@ -115,6 +115,25 @@ const dishData = {
             return null;
         }
     },
+
+    getByOnlineOrder: async (MaPTN) => {
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaPTN', sql.Int);
+            await ps.prepare(`
+                SELECT MA.TenMA, PTN.SoLuong
+                FROM PTN_MON_AN PTN, MON_AN MA
+                WHERE PTN.MaMA = MA.MaMA AND
+                      PTN.MaPTN = @MaPTN
+            `);
+            const result = await ps.execute({ MaPTN });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN GETTING DISH BY ONLINE ORDER: ', error);
+            return null;
+        }
+    }
 }
 
 export default dishData;

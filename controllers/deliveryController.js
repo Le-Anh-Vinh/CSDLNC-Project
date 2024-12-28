@@ -51,7 +51,7 @@ const deliveryController = {
                     totalPrice += dish.GiaMA * item.quantity;
                 }
             }
-            res.render('cart', { cart: req.session.cart, totalPrice: totalPrice, orders: spotOrders });
+            res.render('UserCart', { cart: req.session.cart, totalPrice: totalPrice, products: spotOrders });
             // res.status(200).json({ status: true, cart: req.session.cart, totalPrice, orders: orders });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
@@ -60,9 +60,7 @@ const deliveryController = {
 
     create: async (req, res) => {
         try {
-            const { Address, Phone, Note, MaTK, MaCN} = req.body;
-            const result = await deliveryData.create(Address, Phone, Note, MaTK, MaCN);
-            
+            const { Address, Phone, Note, MaTK, MaCN } = req.body;
             let cartItems = [];
             if (req.session.cart) {
                 if (Array.isArray(req.session.cart)) {
@@ -74,6 +72,8 @@ const deliveryController = {
                 res.status(404).json({ status: false, message: "Cart is empty" });
                 return;
             }
+
+            const result = await deliveryData.create(Address, Phone, Note, MaTK, MaCN);
 
             for (const item of cartItems) {
                 const { dishID, quantity } = item;

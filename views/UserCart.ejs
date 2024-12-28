@@ -57,6 +57,21 @@
           </div>
         </div>
       </div>
+    <div id="purchaseModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="purchaseForm">
+          <!-- Your form fields here -->
+          <label for="address">Address:</label>
+          <input type="text" id="address" name="address" required><br><br>
+          <label for="phone">Phone:</label>
+          <input type="text" id="phone" name="phone" required><br><br>
+          <label for="note">Note:</label>
+          <textarea id="note" name="note"></textarea><br><br>
+          <button type="button" onclick="sendCheckoutRequest()">Submit</button>
+        </form>
+      </div>
+    </div>
 </body>
 
 <script>
@@ -85,8 +100,8 @@
 
   async function sendDeleteRequest(productId) {
     try {
-      const response = await fetch('/delete-product', {
-        method: 'POST',
+      const response = await fetch('/cart', {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -123,9 +138,56 @@
     });
   });
 
+  const checkoutButton = document.querySelector('.checkout-button');
+  const purchaseModal = document.getElementById('purchaseModal');
+  const closeModal = document.querySelector('.modal .close');
+
+  checkoutButton.addEventListener('click', function () {
+    purchaseModal.style.display = 'block';
+  });
+
+  closeModal.addEventListener('click', function () {
+    purchaseModal.style.display = 'none';
+  });
+
+  //window.addEventListener('click', function (event) {
+  //  if (event.target == purchaseModal) {
+  //    purchaseModal.style.display = 'none';
+  //  }
+  //});
+
+  
+
   updateTotalPrice();
 });
 
+
+async function sendCheckoutRequest() {
+  try {
+    const address = document.getElementById('address').value;
+    const phone = document.getElementById('phone').value;
+    const note = document.getElementById('note').value;
+    const user = JSON.parse(sessionStorage.getItem('user'));
+
+    const response = await fetch('/delivery', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({Address: address, Phone: phone, Note: note, MaTK: user.MaTK.user, MaCN: 1}),
+    });
+
+    if(response.ok) {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      alert('Checkout successful!');
+      window.location.href = `/${user.MaTK}`;
+    } else {
+      throw new Error('Failed to checkout.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
 
 </script>
 
