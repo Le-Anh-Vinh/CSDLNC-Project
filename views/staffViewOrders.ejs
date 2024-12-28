@@ -47,7 +47,8 @@
                   <!-- 24/12/2024 -->
   
               </div>
-              <div class="address"><%= Order.DiaChiGiaoHang %></div>
+              <!-- <div class="address"><%= Order.DiaChiGiaoHang %></div> -->
+              <span><%= Order.DiaChiGiaoHang.length > 15 ? Order.DiaChiGiaoHang.slice(0, 15) + '...' : Order.DiaChiGiaoHang %></span>
               <!-- <div class="address">561 Nguyễn Thị Định</div> -->
               
               <div class="actions">
