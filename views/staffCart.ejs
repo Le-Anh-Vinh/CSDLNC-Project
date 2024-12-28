@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/staffCart.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="shopping-cart">
+        <!-- Title -->
+        <div class="title">
+            Cart
+        </div>
+
+        <div class="nav-bar">
+          <label class="product_name">Name</label>
+          <label class="product_unit-price">Unit price</label>
+          <label class="product_quantity">Quantity</label>
+          <label class="product_price">Price</label>
+        </div>
+
+        <% products.forEach((item) => { %>
+          <div class="item" data-product-id="<%= item.product_id %>">
+
+              <div class="description">
+                <span><%= item.productDetails.name.length > 20 ? item.productDetails.name.slice(0, 20) + '...' : item.productDetails.name %></span>
+                <!-- <span>Pizza</span> -->
+              </div>
+              
+              <div class="unit-price">
+                <%= item.productDetails.price %> VNĐ
+                <!-- 100000 VNĐ -->
+              </div>
+
+              <div class="quantity">
+  
+                  <input type="text" name="name" value="<%= item.quantity %>">
+                  <!-- <input type="text" name="name" value="1"> -->
+  
+              </div>
+              <div class="total-price"><%= item.productDetails.price * item.quantity %> VNĐ</div>
+              <!-- <div class="total-price">100000 VNĐ</div> -->
+          
+              <div class="buttons">
+                  <span class="delete-btn"></span>
+              </div>
+          </div>
+        <% }); %>
+        <div class="confirm-section">
+          <div class="confirm-section__price">
+            <div class="label">TOTAL PRICE (0 Products)</div>
+            <div class="final-price">0 VNĐ</div>
+          </div>
+          <div class="confirm-section__btn">
+            <button class="addToOrder-btn">ADD TO AN ORDER</button>
+            <button class="createOrder-btn">CREATE A NEW ORDER</button>
+          </div>
+        </div>
+
+        <div class="overlay"></div>
+        <div class="popup">
+            <div class="popup-content">
+                <!-- Content will be injected dynamically -->
+            </div>
+            <button class="close-popup">Close</button>
+        </div>
+      </div>
+</body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  // tính tổng tiền
+  function updateTotalPrice() {
+    let total = 0;
+
+    const items = document.querySelectorAll('.item');
+
+    items.forEach(item => {
+      const priceElement = item.querySelector('.total-price');
+      if (priceElement) {
+        const priceText = priceElement.textContent;
+        const priceValue = parseFloat(priceText.replace(/[^0-9]/g, '')) || 0; // Extract numerical value
+        total += priceValue;
+      }
+    });
+
+    const totalPriceElement = document.querySelector('.final-price');
+    const totalProductsLabel = document.querySelector('.label');
+
+    totalPriceElement.textContent = `${total.toLocaleString()} VNĐ`;
+    totalProductsLabel.textContent = `TOTAL PRICE (${items.length} Products)`;
+  }
+
+  async function sendDeleteRequest(productId) {
+    try {
+      const response = await fetch('/delete-product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete the product.');
+      }
+
+      console.log('Product deleted successfully.');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  // khi nhấn nút xóa, gửi thông báo lên server và tính lại tổng tiền
+  const deleteButtons = document.querySelectorAll('.delete-btn');
+
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      const item = button.closest('.item');
+
+      if (item) {
+        const productId = item.getAttribute('data-product-id');
+
+        if (productId) {
+          sendDeleteRequest(productId);
+        }
+
+        item.remove();
+        updateTotalPrice();
+      }
+    });
+  });
+
+  updateTotalPrice();
+});
+
+
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const overlay = document.querySelector('.overlay');
+    const popup = document.querySelector('.popup');
+    const popupContent = document.querySelector('.popup-content');
+    const closePopupButton = document.querySelector('.close-popup');
+
+    function showPopup(content) {
+        popupContent.innerHTML = content;
+        overlay.style.display = 'block';
+        popup.style.display = 'block';
+    }
+
+    function hidePopup() {
+        overlay.style.display = 'none';
+        popup.style.display = 'none';
+    }
+
+    // lấy danh sách order từ server
+    async function fetchOrders() {
+        try {
+            const response = await fetch('/get-orders'); // Thay bằng API đúng
+            if (!response.ok) {
+                throw new Error('Failed to fetch orders.');
+            }
+            const orders = await response.json();
+            return orders;
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+            return [];
+        }
+    }
+
+    // Gửi thông tin tạo order lên server
+    async function createNewOrder(staffId, tableNumber, branch) {
+        try {
+            const response = await fetch('/create-order', { // Thay bằng  API của bạn
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ branch, tableNumber, staffId}),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create order.');
+            }
+
+            const result = await response.json();
+            alert(`Order created successfully: ${result.message}`);
+            hidePopup();
+        } catch (error) {
+            console.error('Error creating order:', error);
+            alert('Failed to create order.');
+        }
+    }
+
+    // Gửi thông tin order đã chọn lên server
+    async function selectOrder(orderId) {
+        try {
+            const response = await fetch('/select-order', { // Thay bằng API của bạn
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderId }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to select the order.');
+            }
+
+            const result = await response.json();
+            alert(`Order selected successfully: ${result.message}`);
+            hidePopup();
+        } catch (error) {
+            console.error('Error selecting order:', error);
+            alert('Failed to select the order.');
+        }
+    }
+
+    //hiển thị danh sách order
+    document.querySelector('.addToOrder-btn').addEventListener('click', async function () {
+        const orders = await fetchOrders();
+        let content = '<h3>Available Orders</h3>';
+        if (orders.length > 0) {
+            content += '<ul>';
+            orders.forEach(order => {
+                content += `<li class="order-item" data-order-id="${order.id}">
+                                Order ID: ${order.id}, Table: ${order.table}, Branch: ${order.branch}
+                            </li>`;
+            });
+            content += '</ul>';
+        } else {
+            content += '<p>No orders available.</p>';
+        }
+        showPopup(content);
+
+        // Thêm sự kiện click cho từng order
+        document.querySelectorAll('.order-item').forEach(item => {
+            item.addEventListener('click', function () {
+                const orderId = item.getAttribute('data-order-id');
+                if (orderId) {
+                    selectOrder(orderId);
+                }
+            });
+        });
+    });
+
+    // hiển thị form tạo order mới
+    document.querySelector('.createOrder-btn').addEventListener('click', function () {
+        const content = `
+            <h3>Create a New Order</h3>
+            <form id="create-order-form">
+                <label for="staff-id">Staff ID:</label>
+                <input type="text" id="staff-id" name="staff-id" required>
+                
+                <label for="table-number">Table Number:</label>
+                <select id="table-number" name="table-number">
+                    <option value="1">Table 1</option>
+                    <option value="2">Table 2</option>
+                    <option value="3">Table 3</option>
+                    <option value="4">Table 4</option>
+                    <option value="5">Table 5</option>
+                    <option value="6">Table 6</option>
+                    <option value="7">Table 7</option>
+                    <option value="8">Table 8</option>
+                    <option value="9">Table 9</option>
+                    <option value="10">Table 10</option>
+                </select>
+                
+                <label for="branch">Branch:</label>
+                <select id="branch" name="branch">
+                    <option value="1">Branch 1</option>
+                    <option value="2">Branch 2</option>
+                    <option value="3">Branch 3</option>
+                    <option value="4">Branch 4</option>
+                    <option value="5">Branch 5</option>
+                    <option value="6">Branch 6</option>
+                    <option value="7">Branch 7</option>
+                    <option value="8">Branch 8</option>
+                    <option value="9">Branch 9</option>
+                    <option value="10">Branch 10</option>
+                </select>
+                
+                <button type="submit">Submit</button>
+            </form>
+        `;
+        showPopup(content);
+         // Thêm sự kiện submit cho form
+         document.getElementById('create-order-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const staffId = document.getElementById('staff-id').value;
+            const tableNumber = document.getElementById('table-number').value;
+            const branch = document.getElementById('branch').value;
+
+            createNewOrder(staffId, tableNumber, branch);
+        });
+    });
+
+    closePopupButton.addEventListener('click', hidePopup);
+    overlay.addEventListener('click', hidePopup);
+});
+
+
+</script>
+
+
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+
+        if (!user) {
+            window.location.href = '/auth';
+        } else {
+            console.log('User ID:', user.uid);
+            console.log('User Role:', user.role);
+        }
+    });
+</script> -->
+
+</html>
