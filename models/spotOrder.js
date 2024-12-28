@@ -44,12 +44,13 @@ const spotOrderData = {
         }
     },
 
-    updateStatus: async (MaPGM) => {
+    updateStatus: async (MaPGM, MaTV) => {
         try {
             const ps = new sql.PreparedStatement();
             ps.input('MaPGM', sql.Int);
-            await ps.prepare('UPDATE PHIEU_GOI_MON SET HoanThanhPGM = 1 WHERE MaPGM = @MaPGM');
-            await ps.execute({ MaPGM });
+            ps.input('MaTV', sql.Int);
+            await ps.prepare('EXEC sp_TaoHoaDon_PGM @MaPGM, @MaTV');
+            await ps.execute({ MaPGM, MaTV });
             await ps.unprepare();
         } catch (error) {
             console.log('ERROR IN UPDATING STATUS: ', error);

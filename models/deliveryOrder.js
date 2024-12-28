@@ -83,7 +83,21 @@ const deliveryData = {
             await ps.unprepare();
             return result.recordset;
         } catch (error) {
-            console.log('ERROR IN GETTING INVOICE BY CUSTOMER: ', error);
+            console.log('ERROR IN GETTING ORDER BY CUSTOMER: ', error);
+            return null;
+        }
+    },
+
+    getByID: async (MaPTN) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaPTN', sql.Int);
+            await ps.prepare('SELECT * FROM PHIEU_TAN_NHA WHERE MaPTN = @MaPTN');
+            const result = await ps.execute({ MaPTN });
+            await ps.unprepare();
+            return result.recordset[0];
+        } catch (error) {
+            console.log("ERROR IN GETTING ORDER BY ID: ", error);
             return null;
         }
     },

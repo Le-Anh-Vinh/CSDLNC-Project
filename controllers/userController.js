@@ -3,13 +3,27 @@ import deliveryData from "../models/deliveryOrder.js";
 import spotOrderData from "../models/spotOrder.js";
 import invoiceData from "../models/invoice.js";
 import employeeData from "../models/employee.js";
+import accountData from "../models/account.js";
 
 const userController = {
     getAll: async (req, res) => {
         try {
-            const MaCN = req.params.MaCN;
-            const result = await dishData.getDish(MaCN);
-            res.render('homepage', { dishes: result});
+            if (req.session.role === 'customer') {
+                const MaCN = req.session.MaCN;
+                const result = await dishData.getDish(MaCN);
+                let userInf = await accountData.getAdvancedInfoByID(req.session.user.MaTK);
+                if (!userInf) {
+                    userInf = {
+                        DiemTichLuyHienTai: 0,
+                        ThoiDiemThangHang: Infinity,
+                    };
+                }
+                res.render('userpage', { dishes: result, userInf: req.session.user, moreUserInf: userInf });
+                return;
+            } else {
+                const result = await dishData.getDish(req.session.MaCN);
+                res.render('staffpage', { dishes: result });
+            }
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }
@@ -17,7 +31,7 @@ const userController = {
 
     getDelivery: async (req, res) => {
         try {
-            const MaCN = req.params.MaCN;
+            const MaCN = req.session.MaCN;
             const result = await deliveryData.getPendingByAgency(MaCN);
             
             if (!Array.isArray(result)) {
@@ -42,6 +56,8 @@ const userController = {
         try {
             const { MaNV, MaPTN } = req.body;
             await deliveryData.confirmOrder(MaPTN, MaNV);
+            const orderInfo = await deliveryData.getByID(MaPTN);
+            await invoiceData.create(MaPTN, MaNV, orderInfo.MaTKTao);
             res.status(200).json({ status: true});
         } catch (error) {
             res.status(404).json({ status: false, error: error.message });
@@ -70,10 +86,21 @@ const userController = {
 
     search: async (req, res) => { 
         try {
-            const MaCN = req.params.MaCN;
-            const { keyword } = req.body;
+            const MaCN = req.session.MaCN;
+            const keyword = req.query.keyword;
             const result = await dishData.search(MaCN, keyword);
-            res.render('homepage', { dishes: result});
+            if (req.session.role === 'customer') {
+                let userInf = await accountData.getAdvancedInfoByID(req.session.user.MaTK);
+                if (!userInf) {
+                    userInf = {
+                        DiemTichLuyHienTai: 0,
+                        ThoiDiemThangHang: Infinity,
+                    };
+                }
+                res.render('userpage', { dishes: result, userInf: req.session.user, moreUserInf: userInf });
+            } else {
+                res.render('staffpage', { dishes: result });
+            }
         } catch (error) {
             res.status(404).json({ status: false, error: error.message });
         }

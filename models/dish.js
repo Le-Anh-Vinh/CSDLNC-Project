@@ -42,6 +42,24 @@ const dishData = {
         }
     },
 
+    getByID: async (MaMA) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaMA', sql.Int);
+            await ps.prepare(`
+                SELECT MA.TenMA, MA.GiaMA, MA.MoTa
+                FROM MON_AN MA
+                WHERE MA.MaMA = @MaMA
+            `);
+            const result = await ps.execute({ MaMA });
+            await ps.unprepare();
+            return result.recordset[0];
+        } catch (error) {
+            console.log('ERROR IN GETTING DISH BY ID: ', error);
+            return null;
+        }
+    },
+
     updateStatus: async (MaMA, MaTD, status) => {
         try {
             const ps = new sql.PreparedStatement();
@@ -106,7 +124,7 @@ const dishData = {
         try {
             const ps = new sql.PreparedStatement();
             ps.input('MaMA', sql.Int);
-            await ps.prepare('SELECT GiaMA FROM MON_AN WHERE MaMA = @MaMA');
+            await ps.prepare('SELECT TenMA, GiaMA FROM MON_AN WHERE MaMA = @MaMA');
             const result = await ps.execute({ MaMA });
             await ps.unprepare();
             return result.recordset[0];

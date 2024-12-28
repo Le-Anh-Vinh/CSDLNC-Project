@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta 
+            name="viewport" 
+            content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/style/DanhGia.css" />  
+    </head>
+
+    <body>
+        <script src="https://use.fontawesome.com/a6f0361695.js"></script>
+
+        <h2 id="fh2">CHÚNG TÔI CẢM ƠN ĐÁNH GIÁ CỦA BẠN!</h2>
+        <h4 id="fh6">Your review will help us to improve our web hosting quality products, and customer services.</h4>
+        
+        
+        <form id="DanhGia" class="feedback" action="">
+            <!-- Hidden Input: Mã phiếu gọi món được đánh giá -->
+            <input type="hidden" name="MaPGM" value="<%= MaPGM %>" />
+
+            <div class="pinfo">Mã phiếu gọi món được đánh giá.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+                        <p><%= MaPGM %></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pinfo">Đánh giá điểm phục vụ của nhân viên.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-male"></i></span>
+                        <select class="form-control" id="DiemPhucVu">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pinfo">Đánh giá điểm vị trí chi nhánh.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
+                        <select class="form-control" id="DiemViTriChiNhanh">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pinfo">Đánh giá điểm chất lượng món ăn.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-cutlery"></i></span>
+                        <select class="form-control" id="DiemChatLuongMonAn">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pinfo">Đánh giá điểm giá cả.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                        <select class="form-control" id="DiemGiaCa">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pinfo">Đánh giá điểm về không gian nhà hàng.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-home"></i></span>
+                        <select class="form-control" id="DiemVeKhongGianNhaHang">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pinfo">Hãy viết bình luận của bạn.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                        <textarea class="form-control" id="review" rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+        <script>
+            document.getElementById('DanhGia').addEventListener('submit', async function(event) {
+                event.preventDefault();
+    
+                const MaPGM = `<%= MaPGM %>`;
+                const DiemPhucVu = document.getElementById('DiemPhucVu').value;
+                const DiemViTriChiNhanh = document.getElementById('DiemViTriChiNhanh').value;
+                const DiemChatLuongMonAn = document.getElementById('DiemChatLuongMonAn').value;
+                const DiemGiaCa = document.getElementById('DiemGiaCa').value;
+                const DiemVeKhongGianNhaHang = document.getElementById('DiemVeKhongGianNhaHang').value;
+                const BinhLuan = document.getElementById('review').value;
+    
+                const data = {
+                    MaPGM: MaPGM,
+                    DiemPhucVu: parseInt(DiemPhucVu),
+                    DiemViTriChiNhanh: parseInt(DiemViTriChiNhanh),
+                    DiemChatLuongMonAn: parseInt(DiemChatLuongMonAn),
+                    DiemGiaCa: parseInt(DiemGiaCa),
+                    DiemVeKhongGianNhaHang: parseInt(DiemVeKhongGianNhaHang),
+                    BinhLuan: BinhLuan
+                };
+                try {
+                    const response = await fetch('/evaluation/spot', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+    
+                    if (response.ok) {
+                        alert('Review submitted successfully!');
+                        window.location.href = '/user';
+                    } else {
+                        alert('Failed to submit review.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting the review.');
+                }
+            });
+        </script>
+    </body>
+
+</html>
