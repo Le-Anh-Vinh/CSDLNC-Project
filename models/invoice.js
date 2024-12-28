@@ -23,7 +23,8 @@ const invoiceData = {
                 return null; 
             }
         } catch (error) {
-            
+            console.log('ERROR IN CREATING INVOICE: ', error);
+            return null;
         }
     },
 
@@ -36,7 +37,21 @@ const invoiceData = {
             await ps.unprepare();
             return result.recordset;
         } catch (error) {
-            
+            console.log('ERROR IN GETTING INVOICE BY ID: ', error);
+            return null;
+        }
+    },
+
+    confirmDelivery: async (MaPTN) => {
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaPTN', sql.Int);
+            await ps.prepare('UPDATE HOA_DON_GIAO_TAN_NHA SET HoanThanhThanhToan = 1 WHERE MaPTNThanhToan = @MaPTN');
+            await ps.execute({ MaPTN });
+            await ps.unprepare();
+        } catch (error) {
+            console.log('ERROR IN CONFIRMING DELIVERY: ', error);
+            return null;
         }
     }
 };
