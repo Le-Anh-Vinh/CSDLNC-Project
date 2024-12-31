@@ -426,13 +426,14 @@
             const loginButton = document.getElementById('loginButton');
             const username = document.getElementById('loginUsername').value.trim();
             const password = document.getElementById('loginPassword').value;
+            const branch = document.getElementById('branch').value;
 
             if (password === "") {
                 alert("Password cannot be empty.");
                 return;
             }
 
-            const user = { username: username, password: password };
+            const user = { username: username, password: password, branch: branch };
 
             try {
                 loginButton.disabled = true;
@@ -447,8 +448,8 @@
                 if (response.ok) {
                     const user = await response.json();
                     alert('Login successfully!');
-                    sessionStorage.setItem('user', JSON.stringify({ MaTK: user, role: 'customer'}));
-                    window.location.href = `/${user.user}`;
+                    sessionStorage.setItem('user', JSON.stringify({ MaTK: user, role: 'customer' }));
+                    window.location.href = `/user`;
                 } else {
                     const error = await response.json();
                     alert(`Failed to login, error: ${error.error || 'Unknown error'}`);

@@ -7,7 +7,7 @@ const invoiceData = {
             ps.input('MaPTN', sql.Int);
             ps.input('MaNV', sql.Int);
             ps.input('MaTK', sql.Int);
-            await ps.prepare(`EXEC Generate_HDGTN @MaPTN, @MaNV, @MaTK`);
+            await ps.prepare(`EXEC sp_TaoHoaDonGiaoTanNha @MaPTN, @MaNV, @MaTK`);
             await ps.execute({ MaPTN, MaNV, MaTK });
             await ps.unprepare();
 
@@ -53,7 +53,48 @@ const invoiceData = {
             console.log('ERROR IN CONFIRMING DELIVERY: ', error);
             return null;
         }
-    }
+    },
+
+    getSpotInvoice: async (MaPTN) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaPTN', sql.Int);
+            await ps.prepare('SELECT * FROM HOA_DON_GIAO_TAN_NHA WHERE MaPTNThanhToan = @MaPTN');
+            const result = await ps.execute({ MaPTN });
+            await ps.unprepare();
+            return result.recordset[0];            
+        } catch (error) {
+            console.log('ERROR IN GETTING SPOT INVOICE: ', error);
+            return null;
+        }
+    },
+
+    updateSpotStatus: async (MaHD) => { 
+        try {
+            const ps = new sql.prepareStatement();
+            ps.input('MaHD', sql.Int);
+            await ps.prepare('EXEC sp_HoanThanhThanhToan_HoaDon_PGM @MaHD');
+            await ps.execute({ MaHD });
+            await ps.unprepare();
+        } catch (error) {
+            console.log('ERROR IN UPDATING SPOT STATUS: ', error);
+            return null;
+        }
+    },
+
+    getByCustomer: async (MaTK) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaTK', sql.Int);
+            await ps.prepare('EXEC sp_TruyVanOrderOnlineDaThanhToan @MaTK');
+            const result = await ps.execute({ MaTK });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN GETTING INVOICE BY CUSTOMER: ', error);
+            return null;
+        }
+    },
 };
 
 export default invoiceData;

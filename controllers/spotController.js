@@ -4,7 +4,6 @@ const spotController = {
     create: async (req, res) => {
         try {
             const { MaCN, SoBan, MaNVTaoPhieu } = req.body;
-            const result = await spotOrderData.create(MaCN, SoBan, MaNVTaoPhieu);
 
             let cartItems = [];
             if (req.session.cart) {
@@ -17,6 +16,7 @@ const spotController = {
                 res.status(404).json({ status: false, message: "Cart is empty" });
                 return;
             }
+            const result = await spotOrderData.create(MaCN, SoBan, MaNVTaoPhieu);
 
             for (const item of cartItems) {
                 const { dishID, quantity } = item;
@@ -59,7 +59,8 @@ const spotController = {
     updateStatus: async (req, res) => { 
         try {
             const MaPGM = req.params.MaPGM;
-            await spotOrderData.updateStatus(MaPGM);
+            const { MaTV } = req.body;
+            await spotOrderData.updateStatus(MaPGM, MaTV);
             res.status(200).json({ status: true, message: "Order finished!" });
         } catch (error) {
             res.status(404).json({ status: false, error: error.message });

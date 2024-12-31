@@ -3,8 +3,8 @@ import evaluationData from "../models/evaluation.js";
 const evaluationController = {
     getAddOnline: async (req, res) => { 
         try {
-            const MaPTN = req.body;
-            res.render('evaluationOnline', { MaPTN });
+            const MaPTN = req.params.MaPTN;
+            res.render('DanhGiaOnline', { MaPTN });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }
@@ -16,7 +16,7 @@ const evaluationController = {
             if (DiemChatLuong < 0 || DiemChatLuong > 5 || DiemGiaCa < 0 || DiemGiaCa > 5) {
                 res.status(404).json({ status: false, message: "Evaluation created unsuccessfully with invalid grade!" });
                 return;
-            }   
+            } 
             await evaluationData.createOnline(MaPTN, DiemChatLuong, DiemGiaCa, BinhLuan);
             res.status(200).json({ status: true, message: "Evaluation created successfully!" });
         } catch (error) {
@@ -26,8 +26,8 @@ const evaluationController = {
 
     getAddOnTheSpot: async (req, res) => {
         try {
-            const MaPGM = req.body;
-            res.render('evaluationOnTheSpot', { MaPGM });
+            const MaPGM = req.params.MaPGM;
+            res.render('DanhGia', { MaPGM });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }

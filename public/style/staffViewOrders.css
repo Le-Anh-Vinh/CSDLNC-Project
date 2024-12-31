@@ -343,3 +343,8 @@ background-color: #f2edfe;
   height: 30px;
   width: 100%;
 }
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}

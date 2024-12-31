@@ -19,17 +19,16 @@
           <label class="product_quantity">Quantity</label>
           <label class="product_price">Price</label>
         </div>
-
         <% products.forEach((item) => { %>
-          <div class="item" data-product-id="<%= item.product_id %>">
+          <div class="item" data-product-id="<%= item.dishID %>">
 
               <div class="description">
-                <span><%= item.productDetails.name.length > 20 ? item.productDetails.name.slice(0, 20) + '...' : item.productDetails.name %></span>
+                <span><%= item.name.length > 20 ? item.name.slice(0, 20) + '...' : item.name %></span>
                 <!-- <span>Pizza</span> -->
               </div>
               
               <div class="unit-price">
-                <%= item.productDetails.price %> VNĐ
+                <%= item.unitPrice %> VNĐ
                 <!-- 100000 VNĐ -->
               </div>
 
@@ -39,7 +38,7 @@
                   <!-- <input type="text" name="name" value="1"> -->
   
               </div>
-              <div class="total-price"><%= item.productDetails.price * item.quantity %> VNĐ</div>
+              <div class="total-price"><%= item.unitPrice * item.quantity %> VNĐ</div>
               <!-- <div class="total-price">100000 VNĐ</div> -->
           
               <div class="buttons">
@@ -180,7 +179,7 @@ async function sendCheckoutRequest() {
     if(response.ok) {
       const user = JSON.parse(sessionStorage.getItem('user'));
       alert('Checkout successful!');
-      window.location.href = `/${user.MaTK}`;
+      window.location.href = `/user/`;
     } else {
       throw new Error('Failed to checkout.');
     }

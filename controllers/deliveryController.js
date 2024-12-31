@@ -1,4 +1,5 @@
 import deliveryData from "../models/deliveryOrder.js";
+import agencyData from "../models/agency.js";
 import MyError from "../cerror.js";
 import dishData from "../models/dish.js";
 import spotOrderData from "../models/spotOrder.js";
@@ -11,7 +12,7 @@ const deliveryController = {
             if (!req.session.cart) {
                 req.session.cart = [];
             }
-
+            
             const existingItem = req.session.cart.find(item => item.dishID === dishID);
             if (existingItem) {
                 existingItem.quantity = quantity;
@@ -39,20 +40,35 @@ const deliveryController = {
     getCart: async (req, res) => {
         try {
             const { MaCN } = req.body;
-            const spotOrders = await spotOrderData.getPendingByAgency(MaCN);
+            const spotOrders = await spotOrderData.getPendingByAgency(1);
             const orders = spotOrders.map(order => ({
                 MaPGM: order.MaPGM,
                 SoBan: order.SoBan
             }));
             let totalPrice = 0;
+            const cartDetails = [];
+
             if (req.session.cart) {
                 for (const item of req.session.cart) {
                     const dish = await dishData.priceOfDish(item.dishID);
-                    totalPrice += dish.GiaMA * item.quantity;
+                    const itemTotalPrice = dish.GiaMA * item.quantity;
+                    totalPrice += itemTotalPrice;
+                    cartDetails.push({
+                        dishID: item.dishID,
+                        name: dish.TenMA,
+                        unitPrice: dish.GiaMA,
+                        quantity: item.quantity,
+                        totalPrice: itemTotalPrice
+                    });
                 }
             }
-            res.render('UserCart', { cart: req.session.cart, totalPrice: totalPrice, products: spotOrders });
-            // res.status(200).json({ status: true, cart: req.session.cart, totalPrice, orders: orders });
+            if (req.session.role === 'customer') {
+                res.render('UserCart', { products: cartDetails, totalPrice: totalPrice });
+            } else {
+                const MaCN = req.session.MaCN;
+                const tables = await agencyData.getEmptyTable(MaCN);
+                res.render('StaffCart', { products: cartDetails, totalPrice: totalPrice, orders: orders, tables: tables });
+            }
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }

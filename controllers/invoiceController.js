@@ -11,11 +11,46 @@ const invoiceController = {
         }
     },
     
-    get: async (req, res) => { 
+    getOnline: async (req, res) => { 
         try {
             const MaHDGTN = req.params.MaHDGTN;
             const result = await invoiceData.getByID(MaHDGTN);
-            res.json(result);
+            res.render('onlineInvoice', { invoice: result });
+        } catch (error) {
+            res.status(500).json({ status: false, error: error.message });
+        }
+    },
+
+    getAtSpot: async (req, res) => { 
+        try {
+            const MaHD = req.params.MaHD;
+            const result = await invoiceData.getSpotInvoice(MaHD);
+            res.render('spotInvoice', { invoice: result });
+        } catch (error) {
+            res.status(500).json({ status: false, error: error.message });
+        }
+    },
+
+    paymentConfirm: async (req, res) => { 
+        try {
+            const { MaHD } = req.body;
+            const result = await invoiceData.updateSpotStatus(MaHD);
+            res.status(200).json({ status: true, result: result });
+        } catch (error) {
+            res.status(404).json({ status: false, error: error.message });
+        }
+    },
+
+    customerInvoices: async (req, res) => {
+        try {
+            const MaTK = req.session.user.MaTK;
+            const result = await invoiceData.getByCustomer(MaTK);
+            const sortedOrders = result.sort((a, b) => {
+                const dateA = new Date(a.NgayLapPTN).getTime();
+                const dateB = new Date(b.NgayLapPTN).getTime();
+                return dateB - dateA;
+            });
+            res.render('DanhSachDanhGia', { orders: sortedOrders });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }
