@@ -39,6 +39,21 @@ const invoiceController = {
         } catch (error) {
             res.status(404).json({ status: false, error: error.message });
         }
+    },
+
+    customerInvoices: async (req, res) => {
+        try {
+            const MaTK = req.session.user.MaTK;
+            const result = await invoiceData.getByCustomer(MaTK);
+            const sortedOrders = result.sort((a, b) => {
+                const dateA = new Date(a.NgayLapPTN).getTime();
+                const dateB = new Date(b.NgayLapPTN).getTime();
+                return dateB - dateA;
+            });
+            res.render('DanhSachDanhGia', { orders: sortedOrders });
+        } catch (error) {
+            res.status(500).json({ status: false, error: error.message });
+        }
     }
 };
 

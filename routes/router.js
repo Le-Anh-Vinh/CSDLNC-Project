@@ -56,6 +56,7 @@ router.post('/invoice/online', invoiceController.create); // create an invoice f
 router.get('/invoice/online/:MaHDGTN', invoiceController.getOnline); // get invoice by ID
 router.get('/invoice/spot/:MaHD', invoiceController.getAtSpot); // get invoice by ID
 router.put('/invoice/spot/:MaHD', invoiceController.paymentConfirm); // update invoice status
+router.get('/invoice/history', invoiceController.customerInvoices); // get all orders of a customer
 
 // statistics
 router.get('/statistics/dish', dishController.getDishStatistics); // get statistics of dishes of an agency in a period

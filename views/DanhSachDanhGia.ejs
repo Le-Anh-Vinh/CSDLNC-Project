@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách đơn hàng</title>
+  <!-- <link rel="stylesheet" href="/styles.css"> -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #e74c3c;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: center;
+      padding: 10px;
+    }
+
+    th {
+      background-color: #f7c6c6;
+      color: #333;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .btn {
+      padding: 8px 15px;
+      background-color: #3498db;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    .btn.disabled {
+      background-color: #cccccc;
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <% function formatDate(dateString) { 
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  } %>
+
+  <% function isWithin7Days(dateString) {
+    const date = new Date(dateString);
+    const today = new Date();
+    const diffTime = Math.abs(today - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 7;
+  } %>
+  <div class="container">
+    <h1>Danh Sách Đơn Hàng</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Mã Đơn Hàng</th>
+          <th>Ngày Đặt</th>
+          <th>Thao Tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% orders.forEach((order) => { %>
+          <tr>
+            <td><%= order.MaPTN %></td>
+            <td><%= formatDate(order.NgayLapPTN) %></td>
+            <td>
+              <a href="/evaluation/online/<%= order.MaPTN %>" class="btn <%= isWithin7Days(order.NgayLapPTN) ? '' : 'disabled' %>">Đánh Giá</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

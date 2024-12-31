@@ -52,8 +52,8 @@
               
               <div class="actions">
                 <button class="view-foods">View Order</button>
-                <button class="confirm-order">Confirm Order</button>
-                
+                <button class="confirm-order <%= Order.MaNVXacNhan ? 'disabled' : '' %>">Confirm Order</button>
+                <button class="confirm-paid <%= Order.MaNVXacNhan ? '' : 'disabled' %>">Confirm Paid</button>
             </div>
 
           </div>
@@ -147,6 +147,33 @@
                                 alert('An error occurred while confirming the order.');
                             });
                     });
+                });
+            });
+
+            document.querySelectorAll('.confirm-paid').forEach(button => {
+                button.addEventListener('click', function () {
+                    const orderId = this.closest('.order').getAttribute('data-order-id');
+
+                    // Send data to the server
+                    fetch('/employee/online/confirmDelivery', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ MaPTN: orderId }),
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('Order payment confirmed successfully!');
+                                window.location.reload();
+                            } else {
+                                alert('Failed to confirm the order payment. Please try again.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while confirming the order payment.');
+                        });
                 });
             });
 

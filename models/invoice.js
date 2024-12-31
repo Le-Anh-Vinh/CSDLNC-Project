@@ -80,7 +80,21 @@ const invoiceData = {
             console.log('ERROR IN UPDATING SPOT STATUS: ', error);
             return null;
         }
-    }
+    },
+
+    getByCustomer: async (MaTK) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaTK', sql.Int);
+            await ps.prepare('EXEC sp_TruyVanOrderOnlineDaThanhToan @MaTK');
+            const result = await ps.execute({ MaTK });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN GETTING INVOICE BY CUSTOMER: ', error);
+            return null;
+        }
+    },
 };
 
 export default invoiceData;
