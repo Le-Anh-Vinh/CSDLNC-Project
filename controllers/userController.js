@@ -68,7 +68,7 @@ const userController = {
         try {
             const MaCN = req.params.MaCN;
             const result = await spotOrderData.getPendingByAgency(MaCN);
-            res.render('spotOrder', { orders: result });
+            res.render('staffViewOrdersOffline', { Orders: result });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }
