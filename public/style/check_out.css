@@ -1,0 +1,117 @@
+html, body{
+    height: 100%;
+}
+
+body{
+    margin-top:20px;
+    color: #1a202c;
+    text-align: left;
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    background: linear-gradient(45deg, rgba(238, 174, 202, 1) 0%, rgb(182, 182, 107));
+}
+
+.grid{
+    width: 1200px;
+    max-width: 100%;
+
+    margin: 0 auto;
+}
+
+.main-body {
+    padding: 15px;
+    margin: auto;
+    display: flex;
+    background-color: #e9d17b;
+    border-radius: 20px;
+    width: 700px;
+    flex-direction: column;
+}
+
+.title {
+    /* height: 60px;
+    border-bottom: 2px solid #e2d6fe; */
+    padding: 10px 30px;
+    color: #5E6977;
+    font-size: 20px;
+    font-weight: 400;
+  }
+
+.second-card {
+    flex: 1;
+    margin-left: 30px;
+}
+
+.label h4{
+    margin: 16px 0px 4px 0px;
+}
+
+.display{
+    margin-bottom: -6px;
+    margin-top: 15px;
+    /* flex: 2; */
+}
+
+.label{
+    /* flex: 1; */
+}
+
+.current_address{
+    margin-top: -10px;
+    font-size: 15px;
+}
+
+.user-name{
+    font-size: 20px;
+}
+
+.button{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 86px;
+}
+
+
+.confirm-btn-container{
+    margin-top: 23px;
+    width: 80%;
+    margin-left: 50px;
+}
+
+.confirm{
+    width: 100%;
+    height: 36px;
+    margin-top: 14px;
+    font-size: 20px;
+    font-weight: 600;
+    background-color: #edc26d;
+    border-color: #e7ac37;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.change-infor:hover{
+    background-color: #e3b250;
+}
+
+.row{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 15px;
+    padding: 0 80px;
+}
+
+.rating {
+    flex: 2;
+    gap: 5px;
+  }
+
+.star {
+    font-size: 30px;
+    color: rgb(255, 255, 255);
+  }
+
+.star.selected {
+    color: #daa90b;
+  }
