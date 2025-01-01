@@ -100,18 +100,18 @@
             document.querySelector('.confirm').addEventListener('click', function () {
                 // Lấy Payment ID từ giao diện
                 const paymentId = document.querySelector('.second-card .row:nth-child(1) .display').textContent.trim();
-    
                 // Gửi dữ liệu lên server
                 fetch(`/invoice/spot/<%= HoaDon.MaHD %>`, {
-                    method: 'POST',
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ paymentId }),
+                    body: JSON.stringify({ MaHD: paymentId }),
                 })
                     .then(response => {
                         if (response.ok) {
                             alert('Payment confirmed successfully!');
+                            window.location.href = '/employee';
                         } else {
                             alert('Failed to confirm payment. Please try again.');
                         }

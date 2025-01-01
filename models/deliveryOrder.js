@@ -52,14 +52,14 @@ const deliveryData = {
             ps.input('MaCN', sql.Int);
             await ps.prepare(`SELECT * 
                               FROM PHIEU_TAN_NHA PTN 
-                              WHERE PTN.MaCNDat = 1 AND 
+                              WHERE PTN.MaCNDat = @MaCN AND 
                               CAST(PTN.NgayLapPTN AS DATE) = CAST(GETDATE() AS DATE) AND
                               PTN.MaNVXacNhan IS NULL
                               UNION
                               SELECT PTN.*
                               FROM PHIEU_TAN_NHA PTN 
                                 JOIN HOA_DON_GIAO_TAN_NHA HDGTN ON PTN.MaPTN = HDGTN.MaPTNThanhToan
-                              WHERE PTN.MaCNDat = 1 AND 
+                              WHERE PTN.MaCNDat = @MaCN AND 
                               CAST(PTN.NgayLapPTN AS DATE) = CAST(GETDATE() AS DATE) AND
                               HDGTN.HoanThanhThanhToan = 0`);
             const result = await ps.execute({ MaCN });

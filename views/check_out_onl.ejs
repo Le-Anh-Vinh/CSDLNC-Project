@@ -32,15 +32,6 @@
                 <hr>
                 <div class="row">
                     <div class="label">
-                        <h4>Order ID</h4>
-                    </div>
-                    <div class="display">
-                        <%= HoaDonGiaoTanNha.MaPTNThanhToan %>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="label">
                         <h4>Date create</h4>
                     </div>
                     <div class="display">
@@ -95,7 +86,7 @@
                 <hr>
                 <div>
                     <div class="confirm-btn-container">
-                        <button class="confirm">Confirm Payment</button>
+                        <button class="confirm">Confirm</button>
                     </div>
                 </div>
                 </div>
@@ -107,28 +98,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('.confirm').addEventListener('click', function () {
-                // Lấy Payment ID từ giao diện
-                const paymentId = document.querySelector('.second-card .row:nth-child(1) .display').textContent.trim();
-    
-                // Gửi dữ liệu lên server
-                fetch(`/invoice/spot/<%= HoaDonGiaoTanNha.MaHDGTN %>`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ paymentId }),
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('Payment confirmed successfully!');
-                        } else {
-                            alert('Failed to confirm payment. Please try again.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('An error occurred while confirming payment.');
-                    });
+                window.location.href = '/user';
             });
         });
     </script>

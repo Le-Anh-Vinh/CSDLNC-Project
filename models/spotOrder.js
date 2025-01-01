@@ -83,6 +83,53 @@ const spotOrderData = {
             return null;
         }
     },
+
+    getBookedTables: async (MaCN, BookedDate) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaCN', sql.Int);
+            ps.input('BookedDate', sql.Int);
+            await ps.prepare(`EXEC sp_XemLichDatTruoc @MaCN, @BookedDate`);
+            const result = await ps.execute({ MaCN, BookedDate });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN GETTING BOOKED TABLES: ', error);
+            return null;
+        }
+    },
+
+    getTablesByAgency: async (MaCN) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaCN', sql.Int);
+            await ps.prepare('SELECT * FROM BAN WHERE MaCN = @MaCN');
+            const result = await ps.execute({ MaCN });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN GETTING TABLES BY AGENCY: ', error);
+            return null;
+        }
+    },
+
+    createBooking: async (MaCN, SoBan, GioDen, SlKhach, SDT, GhiChu) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaCN', sql.Int);
+            ps.input('SoBan', sql.Int);
+            ps.input('GioDen', sql.DateTime);
+            ps.input('SlKhach', sql.Int);
+            ps.input('SDT', sql.VarChar(15));
+            ps.input('GhiChu', sql.NVarChar(255));
+            await ps.prepare('EXEC sp_DonDatBanOnline @MaCN, @SoBan, @GioDen, @SlKhach, @SDT, @GhiChu');
+            await ps.execute({ MaCN, SoBan, GioDen, SlKhach, SDT, GhiChu });
+            await ps.unprepare();
+        } catch (error) {
+            console.log('ERROR IN CREATING BOOKING: ', error);
+            return null;
+        }
+    },
 };
 
 export default spotOrderData;

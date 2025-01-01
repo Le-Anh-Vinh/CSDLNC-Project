@@ -70,5 +70,8 @@ router.post('/evaluation/online', evaluationController.addOnline); // add evalua
 router.get('/evaluation/spot/:MaPGM', evaluationController.getAddOnTheSpot); // get evaluation form for on the spot order
 router.post('/evaluation/spot', evaluationController.addOnTheSpot); // add evaluation for on the spot order
 
+// booking table
+router.get('/booking/:date', spotController.getBooking); // get non booked tables of an agency in a date
+router.post('/booking', spotController.bookTable); // book a table for a customer
 
 export default router;

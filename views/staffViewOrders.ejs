@@ -164,10 +164,17 @@
                     })
                         .then(response => {
                             if (response.ok) {
-                                alert('Order payment confirmed successfully!');
-                                window.location.reload();
+                                return response.json();
                             } else {
                                 alert('Failed to confirm the order payment. Please try again.');
+                            }
+                        })
+                        .then(data => {
+                            if (data.status) {
+                                alert('Order payment confirmed successfully!');
+                                window.location.href = `/employee`;
+                            } else {
+                                alert('Error: ' + data.error);
                             }
                         })
                         .catch(error => {

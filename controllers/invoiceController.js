@@ -15,7 +15,8 @@ const invoiceController = {
         try {
             const MaHDGTN = req.params.MaHDGTN;
             const result = await invoiceData.getByID(MaHDGTN);
-            res.render('onlineInvoice', { invoice: result });
+            console.log(result);
+            res.render('check_out_onl', { HoaDonGiaoTanNha: result });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }
@@ -25,7 +26,6 @@ const invoiceController = {
         try {
             const MaHD = req.params.MaHD;
             const result = await invoiceData.getSpotInvoice(MaHD);
-
             res.render('check_out', { HoaDon: result });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });

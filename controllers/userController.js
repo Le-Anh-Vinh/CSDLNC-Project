@@ -57,8 +57,8 @@ const userController = {
             const { MaNV, MaPTN } = req.body;
             await deliveryData.confirmOrder(MaPTN, MaNV);
             const orderInfo = await deliveryData.getByID(MaPTN);
-            await invoiceData.create(MaPTN, MaNV, orderInfo.MaTKTao);
-            res.status(200).json({ status: true});
+            const invoiceID = await invoiceData.create(MaPTN, MaNV, orderInfo.MaTKTao);
+            res.status(200).json({ status: true, invoiceID: invoiceID });
         } catch (error) {
             res.status(404).json({ status: false, error: error.message });
         }
@@ -66,8 +66,8 @@ const userController = {
 
     confirmOrderSpot: async (req, res) => { 
         try {
-            let { MaPGM, MaTV } = req.body;
-            const invoiceID = await spotOrderData.createInvoice(MaPGM, MaTV);
+            let { MaPGM, MaTVTichLuy } = req.body;
+            const invoiceID = await spotOrderData.createInvoice(MaPGM, MaTVTichLuy);
             res.status(200).json({ status: true, invoiceID: invoiceID });
         } catch (error) {
             res.status(404).json({ status: false, error: error.message });
@@ -99,8 +99,8 @@ const userController = {
     confirmDelivery: async (req, res) => { 
         try {
             const { MaPTN } = req.body;
-            await invoiceData.confirmDelivery(MaPTN);
-            res.status(200).json({ status: true});
+            const invoiceID = await invoiceData.confirmDelivery(MaPTN);
+            res.status(200).json({ status: true, invoiceID: invoiceID });
         } catch (error) {
             res.status(404).json({ status: false, error: error.message });
         }

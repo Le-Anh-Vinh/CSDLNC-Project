@@ -61,7 +61,7 @@ const invoiceData = {
             await ps.prepare(`EXEC sp_XemChiTietHoaDonTanNha @MaHDGTN`);
             const result = await ps.execute({ MaHDGTN });
             await ps.unprepare();
-            return result.recordset;
+            return result.recordset[0];
         } catch (error) {
             console.log('ERROR IN GETTING INVOICE BY ID: ', error);
             return null;
@@ -75,18 +75,30 @@ const invoiceData = {
             await ps.prepare('UPDATE HOA_DON_GIAO_TAN_NHA SET HoanThanhThanhToan = 1 WHERE MaPTNThanhToan = @MaPTN');
             await ps.execute({ MaPTN });
             await ps.unprepare();
+
+            const pSelect = new sql.PreparedStatement();
+            pSelect.input('MaPTN', sql.Int);
+            await pSelect.prepare('SELECT MaHDGTN FROM HOA_DON_GIAO_TAN_NHA WHERE MaPTNThanhToan = @MaPTN');
+            const result = await pSelect.execute({ MaPTN });
+            await pSelect.unprepare();
+            if (result.recordset && result.recordset.length > 0) {
+                return result.recordset[0].MaHDGTN;
+            } else {
+                console.log(`No MaHDGTN found for MaPTN: ${MaPTN}`);
+                return null; 
+            }
         } catch (error) {
             console.log('ERROR IN CONFIRMING DELIVERY: ', error);
             return null;
         }
     },
 
-    getSpotInvoice: async (MaPGM) => { 
+    getSpotInvoice: async (MaHD) => { 
         try {
             const ps = new sql.PreparedStatement();
-            ps.input('MaPGM', sql.Int);
-            await ps.prepare('SELECT * FROM HOA_DON WHERE MaPGMThanhToan = @MaPGM');
-            const result = await ps.execute({ MaPGM });
+            ps.input('MaHD', sql.Int);
+            await ps.prepare('SELECT * FROM HOA_DON WHERE MaHD = @MaHD');
+            const result = await ps.execute({ MaHD });
             await ps.unprepare();
             return result.recordset[0];            
         } catch (error) {
@@ -97,7 +109,7 @@ const invoiceData = {
 
     updateSpotStatus: async (MaHD) => { 
         try {
-            const ps = new sql.prepareStatement();
+            const ps = new sql.PreparedStatement();
             ps.input('MaHD', sql.Int);
             await ps.prepare('EXEC sp_HoanThanhThanhToan_HoaDon_PGM @MaHD');
             await ps.execute({ MaHD });
