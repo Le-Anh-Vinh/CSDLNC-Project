@@ -5,7 +5,7 @@
         <meta 
             name="viewport" 
             content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="DanhGia.css" />  
+        <link rel="stylesheet" href="/style/DanhGia.css" />  
     </head>
 
     <body>
@@ -35,11 +35,11 @@
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-male"></i></span>
                         <select class="form-control" id="DiemPhucVu">
-                            <option value="1star">1</option>
-                            <option value="2stars">2</option>
-                            <option value="3stars">3</option>
-                            <option value="4stars">4</option>
-                            <option value="5stars">5</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                         </select>
                     </div>
                 </div>
@@ -51,11 +51,11 @@
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-map-marker"></i></span>
                         <select class="form-control" id="DiemViTriChiNhanh">
-                            <option value="1star">1</option>
-                            <option value="2stars">2</option>
-                            <option value="3stars">3</option>
-                            <option value="4stars">4</option>
-                            <option value="5stars">5</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                         </select>
                     </div>
                 </div>
@@ -67,11 +67,11 @@
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-cutlery"></i></span>
                         <select class="form-control" id="DiemChatLuongMonAn">
-                            <option value="1star">1</option>
-                            <option value="2stars">2</option>
-                            <option value="3stars">3</option>
-                            <option value="4stars">4</option>
-                            <option value="5stars">5</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                         </select>
                     </div>
                 </div>
@@ -83,11 +83,11 @@
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-money"></i></span>
                         <select class="form-control" id="DiemGiaCa">
-                            <option value="1star">1</option>
-                            <option value="2stars">2</option>
-                            <option value="3stars">3</option>
-                            <option value="4stars">4</option>
-                            <option value="5stars">5</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                         </select>
                     </div>
                 </div>
@@ -99,11 +99,11 @@
                     <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-home"></i></span>
                         <select class="form-control" id="DiemVeKhongGianNhaHang">
-                            <option value="1star">1</option>
-                            <option value="2stars">2</option>
-                            <option value="3stars">3</option>
-                            <option value="4stars">4</option>
-                            <option value="5stars">5</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                         </select>
                     </div>
                 </div>
@@ -122,6 +122,48 @@
             <button type="submit" class="btn btn-primary">Submit</button>
 
         </form>
+        <script>
+            document.getElementById('DanhGia').addEventListener('submit', async function(event) {
+                event.preventDefault();
+    
+                const MaPGM = `<%= MaPGM %>`;
+                const DiemPhucVu = document.getElementById('DiemPhucVu').value;
+                const DiemViTriChiNhanh = document.getElementById('DiemViTriChiNhanh').value;
+                const DiemChatLuongMonAn = document.getElementById('DiemChatLuongMonAn').value;
+                const DiemGiaCa = document.getElementById('DiemGiaCa').value;
+                const DiemVeKhongGianNhaHang = document.getElementById('DiemVeKhongGianNhaHang').value;
+                const BinhLuan = document.getElementById('review').value;
+    
+                const data = {
+                    MaPGM: MaPGM,
+                    DiemPhucVu: parseInt(DiemPhucVu),
+                    DiemViTriChiNhanh: parseInt(DiemViTriChiNhanh),
+                    DiemChatLuongMonAn: parseInt(DiemChatLuongMonAn),
+                    DiemGiaCa: parseInt(DiemGiaCa),
+                    DiemVeKhongGianNhaHang: parseInt(DiemVeKhongGianNhaHang),
+                    BinhLuan: BinhLuan
+                };
+                try {
+                    const response = await fetch('/evaluation/spot', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+    
+                    if (response.ok) {
+                        alert('Review submitted successfully!');
+                        window.location.href = '/user';
+                    } else {
+                        alert('Failed to submit review.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting the review.');
+                }
+            });
+        </script>
     </body>
 
 </html>

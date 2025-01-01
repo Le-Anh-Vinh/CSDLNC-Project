@@ -64,10 +64,30 @@
     .btn:hover {
       background-color: #2980b9;
     }
+
+    .btn.disabled {
+      background-color: #cccccc;
+      pointer-events: none;
+    }
   </style>
 </head>
 
 <body>
+  <% function formatDate(dateString) { 
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  } %>
+
+  <% function isWithin7Days(dateString) {
+    const date = new Date(dateString);
+    const today = new Date();
+    const diffTime = Math.abs(today - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays <= 7;
+  } %>
   <div class="container">
     <h1>Danh Sách Đơn Hàng</h1>
     <table>
@@ -81,10 +101,10 @@
       <tbody>
         <% orders.forEach((order) => { %>
           <tr>
-            <td><%= order.maDonHang %></td>
-            <td><%= order.ngayDat %></td>
+            <td><%= order.MaPTN %></td>
+            <td><%= formatDate(order.NgayLapPTN) %></td>
             <td>
-              <a href="/danh-gia/<%= order.maDonHang %>" class="btn">Đánh Giá</a>
+              <a href="/evaluation/online/<%= order.MaPTN %>" class="btn <%= isWithin7Days(order.NgayLapPTN) ? '' : 'disabled' %>">Đánh Giá</a>
             </td>
           </tr>
         <% }) %>
