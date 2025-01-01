@@ -92,6 +92,26 @@
 
             document.querySelectorAll('.complete').forEach(button => {
                 button.addEventListener('click', function () {
+
+                    const content = `
+                        <h3>Complete Order</h3>
+                        <label for="customer-id">Enter Staff ID:</label>
+                        <input type="text" id="customer-id" name="customer-id">
+                        <button class="submit-confirm">Submit</button>
+                    `;
+                    showPopup(content);
+
+                    // Add event listener to the submit button
+                    const submitButton = popup.querySelector('.submit-confirm');
+                    submitButton.addEventListener('click', () => {
+                        const customerIdInput = document.getElementById('customer-id');
+                        const customerId = customerIdInput.value;
+
+                        if (!customerId) {
+                            alert('Please enter a valid Customer ID.');
+                            return;
+                        }
+
                     const orderId = this.closest('.order').getAttribute('data-order-id');
 
                     // gửi lên sv
@@ -100,7 +120,7 @@
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ MaPGM: orderId, MaTV: '' }),
+                        body: JSON.stringify({ MaPGM: orderId, MaTVTichLuy: customerId}),
                     })
                         .then(response => response.json())
                         .then(data => {
@@ -113,8 +133,9 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert('An error occurred while completing the order.');
+                            alert('An error occurred while complete the order.');
                         });
+                    });
                 });
             });
 
