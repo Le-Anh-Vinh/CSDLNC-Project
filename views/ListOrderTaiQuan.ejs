@@ -95,11 +95,41 @@
 
                     const content = `
                         <h3>Complete Order</h3>
-                        <label for="customer-id">Enter Staff ID:</label>
+                        <label for="customer-id">Enter Customer ID:</label>
                         <input type="text" id="customer-id" name="customer-id">
                         <button class="submit-confirm">Submit</button>
+                        <button class="submit-confirm-without-id">Submit without Customer ID</button>
                     `;
                     showPopup(content);
+
+                    //add event listener to the submit with out id button
+                    const submitWithoutIdButton = popup.querySelector('.submit-confirm-without-id');
+                    submitWithoutIdButton.addEventListener('click', () =>{
+                        const confirmAction = confirm('Are you sure you want to complete the order without a Customer ID?');
+                        if (confirmAction) {
+                            fetch('/employee/spot/confirmOrder', {                 //api
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ MaPGM: orderId, MaTVTichLuy: null}),
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    alert('Order complete successfully!');
+                                } else {
+                                    alert('Failed to complete order. Please try again.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while complete the order.');
+                            });
+                        } else {
+                            // Nếu người dùng chọn "Cancel"
+                            alert('Order completion canceled.');
+                        }
+                    })
 
                     // Add event listener to the submit button
                     const submitButton = popup.querySelector('.submit-confirm');
