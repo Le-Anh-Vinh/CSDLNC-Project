@@ -151,7 +151,26 @@ const dishData = {
             console.log('ERROR IN GETTING DISH BY ONLINE ORDER: ', error);
             return null;
         }
-    }
+    },
+
+    getBySpotOrder: async (MaPGM) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaPGM', sql.Int);
+            await ps.prepare(`
+                SELECT MA.TenMA, PGM.SoLuong
+                FROM PGM_MON_AN PGM, MON_AN MA
+                WHERE PGM.MaMA = MA.MaMA AND
+                      PGM.MaPGM = @MaPGM
+            `);
+            const result = await ps.execute({ MaPGM });
+            await ps.unprepare();
+            return result.recordset;            
+        } catch (error) {
+            console.log('ERROR IN GETTING DISH BY SPOT ORDER: ', error);
+            return null;
+        }
+    },
 }
 
 export default dishData;

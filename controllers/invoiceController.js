@@ -25,7 +25,8 @@ const invoiceController = {
         try {
             const MaHD = req.params.MaHD;
             const result = await invoiceData.getSpotInvoice(MaHD);
-            res.render('spotInvoice', { invoice: result });
+
+            res.render('check_out', { HoaDon: result });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }
@@ -34,8 +35,8 @@ const invoiceController = {
     paymentConfirm: async (req, res) => { 
         try {
             const { MaHD } = req.body;
-            const result = await invoiceData.updateSpotStatus(MaHD);
-            res.status(200).json({ status: true, result: result });
+            await invoiceData.updateSpotStatus(MaHD);
+            res.status(200).json({ status: true});
         } catch (error) {
             res.status(404).json({ status: false, error: error.message });
         }

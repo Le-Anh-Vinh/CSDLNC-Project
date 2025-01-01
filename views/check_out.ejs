@@ -7,7 +7,13 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <% function formatDate(dateString) { 
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    } %>
     <div class="container">
         <div class="main-body">
             <!-- Title -->
@@ -20,8 +26,7 @@
                         <h4>Payment ID</h4>
                     </div>
                     <div class="display">
-                        <!-- <%= HoaDon.ID %> -->
-                         123456789
+                        <%= HoaDon.MaHD %>
                     </div>
                 </div>
                 <hr>
@@ -30,28 +35,7 @@
                         <h4>Order ID</h4>
                     </div>
                     <div class="display">
-                        <!-- <%= HoaDon.ID_PGM %> -->
-                         987654321
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="label">
-                        <h4>Table</h4>
-                    </div>
-                    <div class="display">
-                        <!-- <%= HoaDon.SoBan %> -->
-                         5
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="label">
-                        <h4>Branch</h4>
-                    </div>
-                    <div class="display">
-                        <!-- <%=HoaDon.MaCN%> -->
-                         8
+                        <%= HoaDon.MaPGMThanhToan %>
                     </div>
                 </div>
                 <hr>
@@ -60,28 +44,7 @@
                         <h4>Date create</h4>
                     </div>
                     <div class="display">
-                        <!-- <%=HoaDon.NgayThanhToan%> -->
-                         01/01/2025
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="label">
-                        <h4>Sub Total</h4>
-                    </div>
-                    <div class="display">
-                        <!-- <%=HoaDon.TienMonAn%> -->
-                            1000000 VND
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="label">
-                        <h4>Discount</h4>
-                    </div>
-                    <div class="display">
-                        <!-- <%=HoaDon.TienGiamGia%> -->
-                         50000 VND
+                        <%=formatDate(HoaDon.NgayThanhToan)%>
                     </div>
                 </div>
                 <hr>
@@ -90,8 +53,25 @@
                         <h4>User ID</h4>
                     </div>
                     <div class="display">
-                        <!-- <%=HoaDon.MaTVTichLuy%> -->
-                         22127065
+                        <%=HoaDon.MaTVTichLuy%>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>Sub Total</h4>
+                    </div>
+                    <div class="display">
+                        <%=HoaDon.TienMonAn%> VNĐ
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>Discount</h4>
+                    </div>
+                    <div class="display">
+                        <%=HoaDon.TienGiamGia%> VNĐ
                     </div>
                 </div>
                 <hr>
@@ -100,8 +80,7 @@
                         <h4>Total</h4>
                     </div>
                     <div class="display">
-                        <!-- <%=HoaDon.TienThanhToan%> -->
-                         950000 VND
+                        <%=HoaDon.TienThanhToan%> VNĐ
                     </div>
                 </div>
                 <hr>
@@ -123,7 +102,7 @@
                 const paymentId = document.querySelector('.second-card .row:nth-child(1) .display').textContent.trim();
     
                 // Gửi dữ liệu lên server
-                fetch('/confirmPayment', {
+                fetch(`/invoice/spot/<%= HoaDon.MaHD %>`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

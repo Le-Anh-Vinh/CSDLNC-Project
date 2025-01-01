@@ -52,7 +52,7 @@ const userController = {
         }
     },
 
-    confirmOrder: async (req, res) => {
+    confirmOrderOnline: async (req, res) => {
         try {
             const { MaNV, MaPTN } = req.body;
             await deliveryData.confirmOrder(MaPTN, MaNV);
@@ -64,11 +64,33 @@ const userController = {
         }
     },
 
+    confirmOrderSpot: async (req, res) => { 
+        try {
+            let { MaPGM, MaTV } = req.body;
+            const invoiceID = await spotOrderData.createInvoice(MaPGM, MaTV);
+            res.status(200).json({ status: true, invoiceID: invoiceID });
+        } catch (error) {
+            res.status(404).json({ status: false, error: error.message });
+        }
+    },
+
     getSpot: async (req, res) => { 
         try {
-            const MaCN = req.params.MaCN;
+            const MaCN = req.session.MaCN;
             const result = await spotOrderData.getPendingByAgency(MaCN);
-            res.render('staffViewOrdersOffline', { Orders: result });
+
+            if (!Array.isArray(result)) {
+                result = [result];
+            }
+
+            const ordersWithDetails = await Promise.all(result.map(async (order) => {
+                const itemsWithDetails = await dishData.getBySpotOrder(order.MaPGM);
+                return {
+                    ...order,
+                    items: itemsWithDetails
+                };
+            }));
+            res.render('ListOrderTaiQuan', { Orders: ordersWithDetails });
         } catch (error) {
             res.status(500).json({ status: false, error: error.message });
         }

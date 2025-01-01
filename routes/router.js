@@ -46,10 +46,11 @@ router.get('/employee', userController.getAll); // homepage for staff in website
 // employee
 // online
 router.get('/employee/online', userController.getDelivery);  // get all pending delivery orders of an agency
-router.put('/employee/online/confirmOrder', userController.confirmOrder); // staff confirms delivery order
+router.put('/employee/online/confirmOrder', userController.confirmOrderOnline); // staff confirms delivery order
 router.put('/employee/online/confirmDelivery', userController.confirmDelivery); // staff confirms payment
 // on the spot
-router.get('/employee/spot/:MaCN', userController.getSpot); // get all pending spot orders of an agency
+router.get('/employee/spot', userController.getSpot); // get all pending spot orders of an agency
+router.put('/employee/spot/confirmOrder', userController.confirmOrderSpot); // staff confirms spot order
 
 // invoice
 router.post('/invoice/online', invoiceController.create); // create an invoice for a delivery order

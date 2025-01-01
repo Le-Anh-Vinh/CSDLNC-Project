@@ -44,7 +44,7 @@ const spotOrderData = {
         }
     },
 
-    updateStatus: async (MaPGM, MaTV) => {
+    createInvoice: async (MaPGM, MaTV) => {
         try {
             const ps = new sql.PreparedStatement();
             ps.input('MaPGM', sql.Int);
@@ -52,6 +52,18 @@ const spotOrderData = {
             await ps.prepare('EXEC sp_TaoHoaDon_PGM @MaPGM, @MaTV');
             await ps.execute({ MaPGM, MaTV });
             await ps.unprepare();
+
+            const pSelect = new sql.PreparedStatement();
+            pSelect.input('MaPGM', sql.Int);
+            await pSelect.prepare('SELECT MaHD FROM HOA_DON WHERE MaPGMThanhToan = @MaPGM');
+            const result = await pSelect.execute({ MaPGM });
+            await pSelect.unprepare();
+            if (result.recordset && result.recordset.length > 0) {
+                return result.recordset[0].MaHD;
+            } else {
+                console.log(`No MaHD found for MaPGM: ${MaPGM}`);
+                return null; 
+            }
         } catch (error) {
             console.log('ERROR IN UPDATING STATUS: ', error);
             return null;

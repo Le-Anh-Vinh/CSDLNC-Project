@@ -28,6 +28,32 @@ const invoiceData = {
         }
     },
 
+    createSpot: async (MaPGM, MaTV) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaPGM', sql.Int);
+            ps.input('MaTV', sql.Int);
+            await ps.prepare('EXEC sp_TaoHoaDon_PGM @MaPGM, @MaTV');
+            await ps.execute({ MaPGM, MaTV });
+            await ps.unprepare();
+
+            const pSelect = new sql.PreparedStatement();
+            pSelect.input('MaPGM', sql.Int);
+            await pSelect.prepare('SELECT MaHD FROM HOA_DON WHERE MaPGMThanhToan = @MaPGM');
+            const result = await pSelect.execute({ MaPGM });
+            await pSelect.unprepare();
+            if (result.recordset && result.recordset.length > 0) {
+                return result.recordset[0].MaHD;
+            } else {
+                console.log(`No MaHD found for MaPGM: ${MaPGM}`);
+                return null; 
+            }
+        } catch (error) {
+            console.log('ERROR IN CREATING SPOT INVOICE: ', error);
+            return null;
+        }
+    },
+
     getByID: async (MaHDGTN) => {
         try {
             const ps = new sql.PreparedStatement();
@@ -55,12 +81,12 @@ const invoiceData = {
         }
     },
 
-    getSpotInvoice: async (MaPTN) => { 
+    getSpotInvoice: async (MaPGM) => { 
         try {
             const ps = new sql.PreparedStatement();
-            ps.input('MaPTN', sql.Int);
-            await ps.prepare('SELECT * FROM HOA_DON_GIAO_TAN_NHA WHERE MaPTNThanhToan = @MaPTN');
-            const result = await ps.execute({ MaPTN });
+            ps.input('MaPGM', sql.Int);
+            await ps.prepare('SELECT * FROM HOA_DON WHERE MaPGMThanhToan = @MaPGM');
+            const result = await ps.execute({ MaPGM });
             await ps.unprepare();
             return result.recordset[0];            
         } catch (error) {
