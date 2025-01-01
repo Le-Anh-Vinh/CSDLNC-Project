@@ -107,7 +107,26 @@ const spotController = {
             const MaCN = req.session.MaCN;
             const { SoBan, GioDen, SlKhach, SDT, GhiChu } = req.body;
             const result = await spotOrderData.createBooking(MaCN, SoBan, GioDen, SlKhach, SDT, GhiChu);
-            res.status(200).json({ status: true, message: "Table booked successfully!", MaPGM: result });
+            let cartItems = [];
+            if (req.session.cart) {
+                if (Array.isArray(req.session.cart)) {
+                    cartItems = req.session.cart;
+                } else {
+                    cartItems.push(req.session.cart);
+                }
+            } else {
+                const temp = await spotOrderData.create(MaCN, SoBan, null);
+                res.status(200).json({ status: true, message: "Table booked successfully without any dishes!", MaPGM: result });
+                return;
+            }
+            const result_ = await spotOrderData.create(MaCN, SoBan, null);
+
+            for (const item of cartItems) {
+                const { dishID, quantity } = item;
+                await spotOrderData.addDish(result_, dishID, quantity);
+            }
+            req.session.cart = [];
+            res.status(200).json({ status: true, message: "Table booked successfully with some dishes!", MaPGM: result });
         } catch (error) {
             console.error("Error in bookTable:", error);
             res.status(404).json({ status: false, error: error.message });
