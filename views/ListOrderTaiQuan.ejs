@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/ListOrderTaiQuan.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="shopping-cart">
+        <!-- Title -->
+        <div class="title">
+          Restaurant Order List
+        </div>
+
+        <div class="nav-bar">
+          <label class="Order_nav_id">Order ID</label>
+          <label class="Table_nav_no">Table Number</label>
+          <label class="staff_nav_id">Staff ID</label>
+        </div>
+
+        <% Orders.forEach((Order) => { %>
+          <div class="order" data-order-id="<%= Order.MaPGM %>">
+
+              <div class="Order_id">
+                <span><%= Order.MaPGM %></span>
+                <!-- <span>123456</span> -->
+              </div>
+              
+              <div class="table_no">
+                <%= Order.SoBan %>
+                <!-- 88 -->
+              </div>
+
+              <div class="Staff_id">
+  
+                <%= formatDate(Order.MaNV) %>
+                <!-- 58 -->
+  
+              </div>
+              
+              <div class="actions">
+                <button class="view-foods">View Order</button>
+                <button class="complete <%= Order.MaNVXacNhan ? '' : 'disabled' %>">Complete Order</button>
+            </div>
+
+          </div>
+        <% }); %>
+    </div>
+
+    <div class="overlay"></div>
+    <div class="popup">
+        <div class="popup-content">
+            <!-- Content will be injected dynamically -->
+        </div>
+        <button class="close-popup">Close</button>
+    </div>
+      
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.querySelector('.overlay');
+            const popup = document.querySelector('.popup');
+            const popupContent = popup.querySelector('.popup-content');
+            const closePopupButton = popup.querySelector('.close-popup');
+
+            function showPopup(content) {
+                popupContent.innerHTML = content;
+                overlay.style.display = 'block';
+                popup.style.display = 'block';
+            }
+
+            function closePopup() {
+                overlay.style.display = 'none';
+                popup.style.display = 'none';
+            }
+
+            document.querySelectorAll('.view-foods').forEach(button => {
+                button.addEventListener('click', function () {
+                    const orderId = this.closest('.order').getAttribute('data-order-id');
+                    const orders = JSON.parse(`<%- JSON.stringify(Orders) %>`);
+                    const order = orders.find(o => o.MaPTN == orderId);
+                    const content = `
+                        <h3>Foods in Order</h3>
+                        <ul>
+                            ${order.items.map(item => `<li>${item.TenMA} - Quantity: ${item.SoLuong}</li>`).join('')}
+                        </ul>
+                    `;
+                    showPopup(content);
+                });
+            });
+
+            document.querySelectorAll('.complete').forEach(button => {
+                button.addEventListener('click', function () {
+                    const orderId = this.closest('.order').getAttribute('data-order-id');
+
+                    // gửi lên sv
+                    fetch('', {                 //api
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ MaPGM: orderId }),
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                alert('Order complete successfully!');
+                            } else {
+                                alert('Failed to complete order. Please try again.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while complete the order.');
+                        });
+                });
+            });
+
+            closePopupButton.addEventListener('click', closePopup);
+            overlay.addEventListener('click', closePopup);
+        });
+    </script>
+    
+    
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        
+        if (!user) {
+            window.location.href = '/auth';
+            } else {
+                console.log('User ID:', user.uid);
+                console.log('User Role:', user.role);
+                }
+        });
+    </script> -->
+                
+</body>
+</html>

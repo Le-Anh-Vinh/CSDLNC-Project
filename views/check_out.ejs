@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/check_out.css">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="main-body">
+            <!-- Title -->
+            <div class="title">
+                Check Out
+            </div>
+            <div class="second-card">
+                <div class="row">
+                    <div class="label">
+                        <h4>Payment ID</h4>
+                    </div>
+                    <div class="display">
+                        <!-- <%= HoaDon.ID %> -->
+                         123456789
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>Order ID</h4>
+                    </div>
+                    <div class="display">
+                        <!-- <%= HoaDon.ID_PGM %> -->
+                         987654321
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>Table</h4>
+                    </div>
+                    <div class="display">
+                        <!-- <%= HoaDon.SoBan %> -->
+                         5
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>Branch</h4>
+                    </div>
+                    <div class="display">
+                        <!-- <%=HoaDon.MaCN%> -->
+                         8
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>Date create</h4>
+                    </div>
+                    <div class="display">
+                        <!-- <%=HoaDon.NgayThanhToan%> -->
+                         01/01/2025
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>Sub Total</h4>
+                    </div>
+                    <div class="display">
+                        <!-- <%=HoaDon.TienMonAn%> -->
+                            1000000 VND
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>Discount</h4>
+                    </div>
+                    <div class="display">
+                        <!-- <%=HoaDon.TienGiamGia%> -->
+                         50000 VND
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>User ID</h4>
+                    </div>
+                    <div class="display">
+                        <!-- <%=HoaDon.MaTVTichLuy%> -->
+                         22127065
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="label">
+                        <h4>Total</h4>
+                    </div>
+                    <div class="display">
+                        <!-- <%=HoaDon.TienThanhToan%> -->
+                         950000 VND
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <div class="confirm-btn-container">
+                        <button class="confirm">Confirm Payment</button>
+                    </div>
+                </div>
+                </div>
+                    
+                    
+        </div>
+    </div>
+            
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.confirm').addEventListener('click', function () {
+                // Lấy Payment ID từ giao diện
+                const paymentId = document.querySelector('.second-card .row:nth-child(1) .display').textContent.trim();
+    
+                // Gửi dữ liệu lên server
+                fetch('/confirmPayment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ paymentId }),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Payment confirmed successfully!');
+                        } else {
+                            alert('Failed to confirm payment. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while confirming payment.');
+                    });
+            });
+        });
+    </script>
+    
+
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(sessionStorage.getItem('user'));
+  
+            if (!user) {
+                window.location.href = '/auth';
+            } else {
+                console.log('User ID:', user.uid);
+                console.log('User Role:', user.role);
+            }
+        });
+        document.getElementById('order-history-button').addEventListener('click', function () {
+            const user = JSON.parse(sessionStorage.getItem('user'));
+            const uid = user.uid;
+        
+            if (uid) {
+                window.location.href = `/historyOrder/${uid}`;
+            } else {
+                alert('User ID does not exist!');
+            }
+        });
+    </script> -->
+</body>
+</html>
