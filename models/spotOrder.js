@@ -14,8 +14,9 @@ const spotOrderData = {
             // take MaPGM
             const pSelect = new sql.PreparedStatement();
             pSelect.input('MaNVTaoPhieu', sql.Int);
-            await pSelect.prepare('SELECT TOP 1 MaPGM FROM PHIEU_GOI_MON WHERE MaNVTaoPhieu = @MaNVTaoPhieu ORDER BY MaPGM DESC');
-            const result = await pSelect.execute({ MaNVTaoPhieu });
+            pSelect.input('SoBan', sql.Int);
+            await pSelect.prepare('SELECT TOP 1 MaPGM FROM PHIEU_GOI_MON WHERE (MaNVTaoPhieu = @MaNVTaoPhieu) OR (SoBan = @SoBan AND CAST(NgayLapPGM AS DATE) = CAST(GETDATE() AS DATE)) ORDER BY MaPGM DESC');
+            const result = await pSelect.execute({ MaNVTaoPhieu, SoBan });
             await pSelect.unprepare();
             if (result.recordset && result.recordset.length > 0) {
                 return result.recordset[0].MaPGM;
@@ -125,6 +126,19 @@ const spotOrderData = {
             await ps.prepare('EXEC sp_DonDatBanOnline @MaCN, @SoBan, @GioDen, @SlKhach, @SDT, @GhiChu');
             await ps.execute({ MaCN, SoBan, GioDen, SlKhach, SDT, GhiChu });
             await ps.unprepare();
+
+            const pSelect = new sql.PreparedStatement();
+            pSelect.input('SDT', sql.VarChar(15));
+            await pSelect.prepare('SELECT TOP 1 MaPGMDuocTao FROM PHIEU_DAT_BAN PDB WHERE SDTNguoiDat = @SDT ORDER BY MaPGMDuocTao DESC');
+            const result = await pSelect.execute({ SDT });
+            await pSelect.unprepare();
+            if (result.recordset && result.recordset.length > 0) {
+                return result.recordset[0].MaPGMDuocTao;
+            } else {
+                console.log(`No MaPBD found for SDT: ${SDT}`);
+                return null; 
+            }
+
         } catch (error) {
             console.log('ERROR IN CREATING BOOKING: ', error);
             return null;

@@ -71,7 +71,8 @@ router.get('/evaluation/spot/:MaPGM', evaluationController.getAddOnTheSpot); // 
 router.post('/evaluation/spot', evaluationController.addOnTheSpot); // add evaluation for on the spot order
 
 // booking table
-router.get('/booking/:date', spotController.getBooking); // get non booked tables of an agency in a date
+router.get('/getDate', spotController.getDateBooking); // get non booked tables of an agency
+router.get('/booking', spotController.getBooking); // get non booked tables of an agency in a date
 router.post('/booking', spotController.bookTable); // book a table for a customer
 
 export default router;

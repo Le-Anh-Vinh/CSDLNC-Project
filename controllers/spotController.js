@@ -71,8 +71,9 @@ const spotController = {
     getBooking: async (req, res) => { 
         try {
             const MaCN = req.session.MaCN;
-            const date = req.params.date;
-    
+            const date = req.query.date;
+            const time = req.query.time;
+            const dateTime = new Date(`${date}T${time}:00Z`);
             const inputDate = new Date(`${date}T00:00:00Z`);
     
             const today = new Date();
@@ -95,7 +96,7 @@ const spotController = {
             const tables = await spotOrderData.getTablesByAgency(MaCN);
             const nonBookedTables = tables.filter(table => !availableTables.find(availableTable => availableTable.SoBan === table.SoBan));
             const dishes = await dishData.getDish(MaCN);
-            res.render('booking', { tables: nonBookedTables, dishes: dishes });
+            res.render('ThongTinDatBan', { Tables: nonBookedTables, dishes: dishes, dateTime: dateTime });
         } catch (error) {
             console.error("Error in getBooking:", error);
             res.status(404).json({ status: false, error: error.message });
@@ -105,8 +106,9 @@ const spotController = {
     bookTable: async (req, res) => { 
         try {
             const MaCN = req.session.MaCN;
-            const { SoBan, GioDen, SlKhach, SDT, GhiChu } = req.body;
-            const result = await spotOrderData.createBooking(MaCN, SoBan, GioDen, SlKhach, SDT, GhiChu);
+            const { reservationDate, reservationTime, tableID, customerQuantity, customerPhone, customerNote } = req.body;
+            const dateTime = new Date(`${reservationDate}T${reservationTime}:00Z`);
+            const result = await spotOrderData.createBooking(MaCN, tableID, dateTime, customerQuantity, customerPhone, customerNote);
             let cartItems = [];
             if (req.session.cart) {
                 if (Array.isArray(req.session.cart)) {
@@ -115,24 +117,30 @@ const spotController = {
                     cartItems.push(req.session.cart);
                 }
             } else {
-                const temp = await spotOrderData.create(MaCN, SoBan, null);
                 res.status(200).json({ status: true, message: "Table booked successfully without any dishes!", MaPGM: result });
                 return;
             }
-            const result_ = await spotOrderData.create(MaCN, SoBan, null);
-
+            
             for (const item of cartItems) {
                 const { dishID, quantity } = item;
-                await spotOrderData.addDish(result_, dishID, quantity);
+                await spotOrderData.addDish(result, dishID, quantity);
             }
             req.session.cart = [];
-            res.status(200).json({ status: true, message: "Table booked successfully with some dishes!", MaPGM: result });
+            res.status(200).json({ status: true, message: "Table booked successfully with some dishes!"});
         } catch (error) {
             console.error("Error in bookTable:", error);
             res.status(404).json({ status: false, error: error.message });
         }
     },
     
+    getDateBooking: async (req, res) => { 
+        try {
+            res.render('nhapNgayDatBan');            
+        } catch (error) {
+            console.error("Error in getDateBooking:", error);
+            res.status(404).json({ status: false, error: error.message });
+        }
+    },
 };
 
 export default spotController;
