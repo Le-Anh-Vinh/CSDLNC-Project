@@ -141,6 +141,41 @@ const spotController = {
             res.status(404).json({ status: false, error: error.message });
         }
     },
+
+    getBooked: async (req, res) => {
+        try {
+            const MaCN = req.session.MaCN;
+            const bookedTables = await spotOrderData.getBookedTables(MaCN, 1);
+    
+            // Lấy ngày hôm nay
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+    
+            // Lọc các đơn trong hôm nay
+            const todayBookings = bookedTables.filter((booking) => {
+                const bookingDate = new Date(booking.GioDen);
+                return bookingDate.toDateString() === today.toDateString();
+            });
+    
+            todayBookings.sort((a, b) => new Date(a.GioDen) - new Date(b.GioDen));
+    
+            const formattedBookings = todayBookings.map((booking) => ({
+                ...booking,
+                GioDen: new Date(booking.GioDen).toLocaleString("en-GB", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }),
+            }));
+    
+            res.render('DanhSachDonDatBan', { status: true, Reservation_list: formattedBookings });
+        } catch (error) {
+            console.error("Error in getBooked:", error);
+            res.status(404).json({ status: false, error: error.message });
+        }
+    }
 };
 
 export default spotController;

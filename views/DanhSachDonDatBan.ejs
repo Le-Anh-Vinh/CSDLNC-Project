@@ -16,36 +16,18 @@
         <div class="nav-bar">
           <label class="Reservation_nav_id">Reservation ID</label>
           <label class="Reservation_nav_date">Reservation Date</label>
-          <label class="Customer_nav_acc">Customer Account</label>
         </div>
         
-        <!-- <% Reservation_list.forEach((reservation) => { %> -->
+        <% Reservation_list.forEach((reservation) => { %>
           <div class="order" reservation-id="<%= reservation.MaPBD %>">
-
               <div class="Reservation_id">
-                <!-- <span><%= Reservation.NgayDat %></span> -->
-                <span>123456</span>
+                <span><%= reservation.GioDen %></span>
               </div>
-              
               <div class="Reservation_date">
-                <!-- <%= Reservation.SoBan %> -->
-                88
+                <%= reservation.SoBan %>
               </div>
-
-              <div class="Reservation_account">
-  
-                <!-- <%= Reservation.MaTKDatBan %> -->
-                58
-  
-              </div>
-              
-              <div class="actions">
-                <button class="reservation-detail">Reservation Detail</button>
-                <button class="confirm-reservation">Confirm Reservation</button>
-            </div>
-
           </div>
-        <!-- <% }); %> -->
+        <% }); %>
     </div>
 
     <div class="overlay"></div>
