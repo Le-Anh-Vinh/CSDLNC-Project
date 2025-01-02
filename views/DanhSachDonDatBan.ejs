@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/DanhSachDonDatBan.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="shopping-cart">
+        <!-- Title -->
+        <div class="title">
+          Table Reservation List
+        </div>
+
+        <div class="nav-bar">
+          <label class="Reservation_nav_id">Reservation ID</label>
+          <label class="Reservation_nav_date">Reservation Date</label>
+          <label class="Customer_nav_acc">Customer Account</label>
+        </div>
+        
+        <!-- <% Reservation_list.forEach((reservation) => { %> -->
+          <div class="order" reservation-id="<%= reservation.MaPBD %>">
+
+              <div class="Reservation_id">
+                <!-- <span><%= Reservation.NgayDat %></span> -->
+                <span>123456</span>
+              </div>
+              
+              <div class="Reservation_date">
+                <!-- <%= Reservation.SoBan %> -->
+                88
+              </div>
+
+              <div class="Reservation_account">
+  
+                <!-- <%= Reservation.MaTKDatBan %> -->
+                58
+  
+              </div>
+              
+              <div class="actions">
+                <button class="reservation-detail">Reservation Detail</button>
+                <button class="confirm-reservation">Confirm Reservation</button>
+            </div>
+
+          </div>
+        <!-- <% }); %> -->
+    </div>
+
+    <div class="overlay"></div>
+    <div class="popup">
+        <div class="popup-content">
+            <!-- Content will be injected dynamically -->
+        </div>
+        <button class="close-popup">Close</button>
+    </div>
+      
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.querySelector('.overlay');
+            const popup = document.querySelector('.popup');
+            const popupContent = popup.querySelector('.popup-content');
+            const closePopupButton = popup.querySelector('.close-popup');
+
+            function showPopup(content) {
+                popupContent.innerHTML = content;
+                overlay.style.display = 'block';
+                popup.style.display = 'block';
+            }
+
+            function closePopup() {
+                overlay.style.display = 'none';
+                popup.style.display = 'none';
+            }
+
+            document.querySelectorAll('.reservation-detail').forEach(button => {
+                button.addEventListener('click', function () {
+                    const reservationId = this.closest('.order').getAttribute('reservation-id');
+
+                    // Lấy thông tin từ danh sách Reservation_list
+                    const reservation = Reservation_list.find(res => res.MaPBD === reservationId);
+
+                    if (reservation) {
+                        const MaPGM = reservation.MaPGM; // Lấy mã phiếu gọi món từ reservation
+
+                        // Gửi yêu cầu lấy thông tin từ phiếu gọi món
+                        fetch(`/api/order-detail/${MaPGM}`) // API lấy thông tin phiếu gọi món
+                            .then(response => response.json())
+                            .then(PhieuGoiMon => {
+                                if (PhieuGoiMon) {
+                                    const content = `
+                                        <h3>Reservation Details</h3>
+                                        <ul>
+                                            <li><strong>Reservation Date:</strong> ${reservation.NgayDat}</li>
+                                            <li><strong>Reservation Time:</strong> ${reservation.GioDat}</li>
+                                            <li><strong>Customer Quantity:</strong> ${reservation.SoLuongKhach}</li>
+                                            <li><strong>Customer Phone:</strong> ${reservation.SoDienThoai}</li>
+                                            <li><strong>Table ID:</strong> ${PhieuGoiMon.MaBan}</li>
+                                            <li><strong>Note:</strong> ${reservation.GhiChu || 'No note provided'}</li>
+                                        </ul>
+                                    `;
+                                    showPopup(content);
+                                } else {
+                                    alert('Order details not found.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching order details:', error);
+                                alert('Failed to fetch order details.');
+                            });
+                    } else {
+                        alert('Reservation not found.');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.confirm-reservation').forEach(button => {
+                button.addEventListener('click', function () {
+
+                    const content = `
+                        <h3>Confirm Reservation</h3>
+                        <label for="staff-id">Enter Staff ID:</label>
+                        <input type="text" id="staff-id" name="staff-id">
+                        <button class="submit-confirm">Submit</button>
+                    `;
+                    showPopup(content);
+
+                    // Add event listener to the submit button
+                    const submitButton = popup.querySelector('.submit-confirm');
+                    submitButton.addEventListener('click', () => {
+                        const StaffIdInput = document.getElementById('staff-id');
+                        const StaffId = StaffIdInput.value;
+
+                        if (!StaffId) {
+                            alert('Please enter a valid Staff ID.');
+                            return;
+                        }
+
+                        const ReservationId = this.closest('.order').getAttribute('Reservation-id');
+                        // gửi lên sv
+                        fetch('', {                 //api
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ MaPBD: ReservationId, MaNVXacNhan: StaffId}),
+                        })
+                            .then(response => {
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.status) {
+                                    alert(`Order completed successfully!`);
+                                    // window.location.href = `/invoice/spot/${data.invoiceID}`;
+                                } else {
+                                    alert('Failed to complete order. Please try again.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while complete the order.');
+                            });
+                    });
+                });
+            });
+
+            closePopupButton.addEventListener('click', closePopup);
+            overlay.addEventListener('click', closePopup);
+        });
+    </script>
+    
+    
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        
+        if (!user) {
+            window.location.href = '/auth';
+            } else {
+                console.log('User ID:', user.uid);
+                console.log('User Role:', user.role);
+                }
+        });
+    </script> -->
+                
+</body>
+</html>
