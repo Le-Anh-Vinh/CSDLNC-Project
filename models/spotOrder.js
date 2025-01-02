@@ -14,8 +14,9 @@ const spotOrderData = {
             // take MaPGM
             const pSelect = new sql.PreparedStatement();
             pSelect.input('MaNVTaoPhieu', sql.Int);
-            await pSelect.prepare('SELECT TOP 1 MaPGM FROM PHIEU_GOI_MON WHERE MaNVTaoPhieu = @MaNVTaoPhieu ORDER BY MaPGM DESC');
-            const result = await pSelect.execute({ MaNVTaoPhieu });
+            pSelect.input('SoBan', sql.Int);
+            await pSelect.prepare('SELECT TOP 1 MaPGM FROM PHIEU_GOI_MON WHERE (MaNVTaoPhieu = @MaNVTaoPhieu) OR (SoBan = @SoBan AND CAST(NgayLapPGM AS DATE) = CAST(GETDATE() AS DATE)) ORDER BY MaPGM DESC');
+            const result = await pSelect.execute({ MaNVTaoPhieu, SoBan });
             await pSelect.unprepare();
             if (result.recordset && result.recordset.length > 0) {
                 return result.recordset[0].MaPGM;
@@ -44,13 +45,26 @@ const spotOrderData = {
         }
     },
 
-    updateStatus: async (MaPGM) => {
+    createInvoice: async (MaPGM, MaTV) => {
         try {
             const ps = new sql.PreparedStatement();
             ps.input('MaPGM', sql.Int);
-            await ps.prepare('UPDATE PHIEU_GOI_MON SET HoanThanhPGM = 1 WHERE MaPGM = @MaPGM');
-            await ps.execute({ MaPGM });
+            ps.input('MaTV', sql.Int);
+            await ps.prepare('EXEC sp_TaoHoaDon_PGM @MaPGM, @MaTV');
+            await ps.execute({ MaPGM, MaTV });
             await ps.unprepare();
+
+            const pSelect = new sql.PreparedStatement();
+            pSelect.input('MaPGM', sql.Int);
+            await pSelect.prepare('SELECT MaHD FROM HOA_DON WHERE MaPGMThanhToan = @MaPGM');
+            const result = await pSelect.execute({ MaPGM });
+            await pSelect.unprepare();
+            if (result.recordset && result.recordset.length > 0) {
+                return result.recordset[0].MaHD;
+            } else {
+                console.log(`No MaHD found for MaPGM: ${MaPGM}`);
+                return null; 
+            }
         } catch (error) {
             console.log('ERROR IN UPDATING STATUS: ', error);
             return null;
@@ -67,6 +81,66 @@ const spotOrderData = {
             return result.recordset;
         } catch (error) {
             console.log('ERROR IN GETTING BY AGENCY: ', error);
+            return null;
+        }
+    },
+
+    getBookedTables: async (MaCN, BookedDate) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaCN', sql.Int);
+            ps.input('BookedDate', sql.Int);
+            await ps.prepare(`EXEC sp_XemLichDatTruoc @MaCN, @BookedDate`);
+            const result = await ps.execute({ MaCN, BookedDate });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN GETTING BOOKED TABLES: ', error);
+            return null;
+        }
+    },
+
+    getTablesByAgency: async (MaCN) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaCN', sql.Int);
+            await ps.prepare('SELECT * FROM BAN WHERE MaCN = @MaCN');
+            const result = await ps.execute({ MaCN });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN GETTING TABLES BY AGENCY: ', error);
+            return null;
+        }
+    },
+
+    createBooking: async (MaCN, SoBan, GioDen, SlKhach, SDT, GhiChu) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaCN', sql.Int);
+            ps.input('SoBan', sql.Int);
+            ps.input('GioDen', sql.DateTime);
+            ps.input('SlKhach', sql.Int);
+            ps.input('SDT', sql.VarChar(15));
+            ps.input('GhiChu', sql.NVarChar(255));
+            await ps.prepare('EXEC sp_DonDatBanOnline @MaCN, @SoBan, @GioDen, @SlKhach, @SDT, @GhiChu');
+            await ps.execute({ MaCN, SoBan, GioDen, SlKhach, SDT, GhiChu });
+            await ps.unprepare();
+
+            const pSelect = new sql.PreparedStatement();
+            pSelect.input('SDT', sql.VarChar(15));
+            await pSelect.prepare('SELECT TOP 1 MaPGMDuocTao FROM PHIEU_DAT_BAN PDB WHERE SDTNguoiDat = @SDT ORDER BY MaPGMDuocTao DESC');
+            const result = await pSelect.execute({ SDT });
+            await pSelect.unprepare();
+            if (result.recordset && result.recordset.length > 0) {
+                return result.recordset[0].MaPGMDuocTao;
+            } else {
+                console.log(`No MaPBD found for SDT: ${SDT}`);
+                return null; 
+            }
+
+        } catch (error) {
+            console.log('ERROR IN CREATING BOOKING: ', error);
             return null;
         }
     },

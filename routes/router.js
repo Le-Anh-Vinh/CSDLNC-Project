@@ -33,37 +33,46 @@ router.get('/delivery/order', deliveryController.get); // get all delivery order
 // on the spot
 router.post('/spot', spotController.create); // create a spot order based on cart in session (employees order for customer)
 router.post('/spot/:MaPGM', spotController.addDish); // add dish to an existing spot order
-router.put('/spot/:MaPGM', spotController.updateStatus); // spot order is done
+router.put('/spot/:MaPGM', spotController.updateStatus); // spot order is done, update status and create invoice
 // dish
 router.put('/dish', dishController.updateStatus); // update dish status unavailable
 
 // user
-router.get('/user/:MaCN', userController.getAll); // homepage for customer in website
-router.get('/user/search/:MaCN', userController.search); // search for dishes by keywords
-
+router.get('/user', userController.getAll); // homepage for customer in website
+router.get('/search', userController.search); // search for dishes by keywords
+// employee
+router.get('/employee', userController.getAll); // homepage for staff in website
 
 // employee
 // online
-router.get('/employee/online/:MaCN', userController.getDelivery);  // get all pending delivery orders of an agency
-router.put('/employee/online/confirmOrder/:MaCN', userController.confirmOrder); // staff confirms delivery order
-router.put('/employee/online/confirmDelivery/:MaCN', userController.confirmDelivery); // staff confirms payment
+router.get('/employee/online', userController.getDelivery);  // get all pending delivery orders of an agency
+router.put('/employee/online/confirmOrder', userController.confirmOrderOnline); // staff confirms delivery order
+router.put('/employee/online/confirmDelivery', userController.confirmDelivery); // staff confirms payment
 // on the spot
-router.get('/employee/spot/:MaCN', userController.getSpot); // get all pending spot orders of an agency
+router.get('/employee/spot', userController.getSpot); // get all pending spot orders of an agency
+router.put('/employee/spot/confirmOrder', userController.confirmOrderSpot); // staff confirms spot order
 
 // invoice
-router.post('/invoice', invoiceController.create); // create an invoice for a delivery order
-router.get('/invoice/:MaHDGTN', invoiceController.get); // get invoice by ID
+router.post('/invoice/online', invoiceController.create); // create an invoice for a delivery order
+router.get('/invoice/online/:MaHDGTN', invoiceController.getOnline); // get invoice by ID
+router.get('/invoice/spot/:MaHD', invoiceController.getAtSpot); // get invoice by ID
+router.put('/invoice/spot/:MaHD', invoiceController.paymentConfirm); // update invoice status
+router.get('/invoice/history', invoiceController.customerInvoices); // get all orders of a customer
 
 // statistics
 router.get('/statistics/dish', dishController.getDishStatistics); // get statistics of dishes of an agency in a period
 
 // evaluation
 // online
-router.get('/evaluation/online', evaluationController.getAddOnline); // get evaluation form for online order
+router.get('/evaluation/online/:MaPTN', evaluationController.getAddOnline); // get evaluation form for online order
 router.post('/evaluation/online', evaluationController.addOnline); // add evaluation for online order
 // on the spot
-router.get('/evaluation/spot', evaluationController.getAddOnTheSpot); // get evaluation form for on the spot order
+router.get('/evaluation/spot/:MaPGM', evaluationController.getAddOnTheSpot); // get evaluation form for on the spot order
 router.post('/evaluation/spot', evaluationController.addOnTheSpot); // add evaluation for on the spot order
 
+// booking table
+router.get('/getDate', spotController.getDateBooking); // get non booked tables of an agency
+router.get('/booking', spotController.getBooking); // get non booked tables of an agency in a date
+router.post('/booking', spotController.bookTable); // book a table for a customer
 
 export default router;

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta 
+            name="viewport" 
+            content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/style/DanhGiaOnline.css" />  
+    </head>
+
+    <body>
+        <script src="https://use.fontawesome.com/a6f0361695.js"></script>
+
+        <h2 id="fh2">CHÚNG TÔI CẢM ƠN ĐÁNH GIÁ CỦA BẠN!</h2>
+        <h4 id="fh6">Your review will help us to improve our web hosting quality products, and customer services.</h4>
+        
+        
+        <form id="DanhGiaOnline" class="feedback">
+            <!-- Hidden Input: Mã phiếu gọi món được đánh giá -->
+            <input type="hidden" name="MaPTN" value="<%= MaPTN %>" />
+
+            <div class="pinfo">Mã phiếu tận nhà được đánh giá.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-file-text"></i></span>
+                        <p><%= MaPTN %></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pinfo">Đánh giá điểm chất lượng món ăn.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-cutlery"></i></span>
+                        <select class="form-control" id="DiemChatLuongMonAn">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pinfo">Đánh giá điểm giá cả.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-money"></i></span>
+                        <select class="form-control" id="DiemGiaCa">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pinfo">Hãy viết bình luận của bạn.</div>
+            <div class="form-group">
+                <div class="col-md-4 inputGroupContainer">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                        <textarea class="form-control" id="review" rows="5"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Submit</button>
+
+        </form>
+    </body>
+    <script>
+        document.getElementById('DanhGiaOnline').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const MaPTN = `<%= MaPTN %>`;
+            const DiemChatLuongMonAn = document.getElementById('DiemChatLuongMonAn').value;
+            const DiemGiaCa = document.getElementById('DiemGiaCa').value;
+            const BinhLuan = document.getElementById('review').value;
+
+            const data = {
+                MaPTN: MaPTN,
+                DiemChatLuong: parseInt(DiemChatLuongMonAn),
+                DiemGiaCa: parseInt(DiemGiaCa),
+                BinhLuan: BinhLuan
+            };
+            console.log(data);
+            try {
+                const response = await fetch('/evaluation/online', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert('Review submitted successfully!');
+                    window.location.href = '/user';
+                } else {
+                    alert('Failed to submit review.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the review.');
+            }
+        });
+    </script>
+
+</html>

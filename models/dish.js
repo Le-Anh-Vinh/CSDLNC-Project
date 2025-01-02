@@ -42,6 +42,24 @@ const dishData = {
         }
     },
 
+    getByID: async (MaMA) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaMA', sql.Int);
+            await ps.prepare(`
+                SELECT MA.TenMA, MA.GiaMA, MA.MoTa
+                FROM MON_AN MA
+                WHERE MA.MaMA = @MaMA
+            `);
+            const result = await ps.execute({ MaMA });
+            await ps.unprepare();
+            return result.recordset[0];
+        } catch (error) {
+            console.log('ERROR IN GETTING DISH BY ID: ', error);
+            return null;
+        }
+    },
+
     updateStatus: async (MaMA, MaTD, status) => {
         try {
             const ps = new sql.PreparedStatement();
@@ -106,12 +124,50 @@ const dishData = {
         try {
             const ps = new sql.PreparedStatement();
             ps.input('MaMA', sql.Int);
-            await ps.prepare('SELECT GiaMA FROM MON_AN WHERE MaMA = @MaMA');
+            await ps.prepare('SELECT TenMA, GiaMA FROM MON_AN WHERE MaMA = @MaMA');
             const result = await ps.execute({ MaMA });
             await ps.unprepare();
             return result.recordset[0];
         } catch (error) {
             console.log('ERROR IN GETTING PRICE OF DISH: ', error);
+            return null;
+        }
+    },
+
+    getByOnlineOrder: async (MaPTN) => {
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaPTN', sql.Int);
+            await ps.prepare(`
+                SELECT MA.TenMA, PTN.SoLuong
+                FROM PTN_MON_AN PTN, MON_AN MA
+                WHERE PTN.MaMA = MA.MaMA AND
+                      PTN.MaPTN = @MaPTN
+            `);
+            const result = await ps.execute({ MaPTN });
+            await ps.unprepare();
+            return result.recordset;
+        } catch (error) {
+            console.log('ERROR IN GETTING DISH BY ONLINE ORDER: ', error);
+            return null;
+        }
+    },
+
+    getBySpotOrder: async (MaPGM) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaPGM', sql.Int);
+            await ps.prepare(`
+                SELECT MA.TenMA, PGM.SoLuong
+                FROM PGM_MON_AN PGM, MON_AN MA
+                WHERE PGM.MaMA = MA.MaMA AND
+                      PGM.MaPGM = @MaPGM
+            `);
+            const result = await ps.execute({ MaPGM });
+            await ps.unprepare();
+            return result.recordset;            
+        } catch (error) {
+            console.log('ERROR IN GETTING DISH BY SPOT ORDER: ', error);
             return null;
         }
     },

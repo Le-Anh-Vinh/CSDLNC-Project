@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/ListOrderTaiQuan.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="shopping-cart">
+        <!-- Title -->
+        <div class="title">
+          Restaurant Order List
+        </div>
+
+        <div class="nav-bar">
+          <label class="Order_nav_id">Order ID</label>
+          <label class="Table_nav_no">Table Number</label>
+          <label class="staff_nav_id">Staff ID</label>
+        </div>
+        
+        <% Orders.forEach((Order) => { %>
+          <div class="order" data-order-id="<%= Order.MaPGM %>">
+
+              <div class="Order_id">
+                <span><%= Order.MaPGM %></span>
+                <!-- <span>123456</span> -->
+              </div>
+              
+              <div class="table_no">
+                <%= Order.SoBan %>
+                <!-- 88 -->
+              </div>
+
+              <div class="Staff_id">
+  
+                <%= Order.MaNVTaoPhieu %>
+                <!-- 58 -->
+  
+              </div>
+              
+              <div class="actions">
+                <button class="view-foods">View Order</button>
+                <button class="complete">Complete Order</button>
+            </div>
+
+          </div>
+        <% }); %>
+    </div>
+
+    <div class="overlay"></div>
+    <div class="popup">
+        <div class="popup-content">
+            <!-- Content will be injected dynamically -->
+        </div>
+        <button class="close-popup">Close</button>
+    </div>
+      
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.querySelector('.overlay');
+            const popup = document.querySelector('.popup');
+            const popupContent = popup.querySelector('.popup-content');
+            const closePopupButton = popup.querySelector('.close-popup');
+
+            function showPopup(content) {
+                popupContent.innerHTML = content;
+                overlay.style.display = 'block';
+                popup.style.display = 'block';
+            }
+
+            function closePopup() {
+                overlay.style.display = 'none';
+                popup.style.display = 'none';
+            }
+
+            document.querySelectorAll('.view-foods').forEach(button => {
+                button.addEventListener('click', function () {
+                    const orderId = this.closest('.order').getAttribute('data-order-id');
+                    const orders = JSON.parse(`<%- JSON.stringify(Orders) %>`);
+                    const order = orders.find(o => o.MaPGM == orderId);
+                    const content = `
+                        <h3>Foods in Order</h3>
+                        <ul>
+                            ${order.items.map(item => `<li>${item.TenMA} - Quantity: ${item.SoLuong}</li>`).join('')}
+                        </ul>
+                    `;
+                    showPopup(content);
+                });
+            });
+
+            document.querySelectorAll('.complete').forEach(button => {
+                button.addEventListener('click', function () {
+
+                    const content = `
+                        <h3>Complete Order</h3>
+                        <label for="customer-id">Enter Customer ID:</label>
+                        <input type="text" id="customer-id" name="customer-id">
+                        <button class="submit-confirm">Submit</button>
+                        <button class="submit-confirm-without-id">Submit without Customer ID</button>
+                    `;
+                    showPopup(content);
+
+                    //add event listener to the submit with out id button
+                    const submitWithoutIdButton = popup.querySelector('.submit-confirm-without-id');
+                    submitWithoutIdButton.addEventListener('click', () =>{
+                        const confirmAction = confirm('Are you sure you want to complete the order without a Customer ID?');
+                        const orderId = this.closest('.order').getAttribute('data-order-id');
+                        if (confirmAction) {
+                            fetch('/employee/spot/confirmOrder', {                 //api
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ MaPGM: orderId, MaTVTichLuy: null}),
+                        })
+                            .then(response => {
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.status) {
+                                    alert(`Order completed successfully!`);
+                                    window.location.href = `/invoice/spot/${data.invoiceID}`;
+                                } else {
+                                    alert('Failed to complete order. Please try again.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while complete the order.');
+                            });
+                        } else {
+                            // Nếu người dùng chọn "Cancel"
+                            alert('Order completion canceled.');
+                        }
+                    })
+
+                    // Add event listener to the submit button
+                    const submitButton = popup.querySelector('.submit-confirm');
+                    submitButton.addEventListener('click', () => {
+                        const customerIdInput = document.getElementById('customer-id');
+                        const customerId = customerIdInput.value;
+
+                        if (!customerId) {
+                            alert('Please enter a valid Customer ID.');
+                            return;
+                        }
+
+                        const orderId = this.closest('.order').getAttribute('data-order-id');
+                        // gửi lên sv
+                        fetch('/employee/spot/confirmOrder', {                 //api
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ MaPGM: orderId, MaTVTichLuy: customerId}),
+                        })
+                            .then(response => {
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.status) {
+                                    alert(`Order completed successfully!`);
+                                    window.location.href = `/invoice/spot/${data.invoiceID}`;
+                                } else {
+                                    alert('Failed to complete order. Please try again.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('An error occurred while complete the order.');
+                            });
+                    });
+                });
+            });
+
+            closePopupButton.addEventListener('click', closePopup);
+            overlay.addEventListener('click', closePopup);
+        });
+    </script>
+    
+    
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        
+        if (!user) {
+            window.location.href = '/auth';
+            } else {
+                console.log('User ID:', user.uid);
+                console.log('User Role:', user.role);
+                }
+        });
+    </script> -->
+                
+</body>
+</html>

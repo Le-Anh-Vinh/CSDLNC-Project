@@ -43,6 +43,33 @@ const accountData = {
             console.log('ERROR IN SIGNUP: ', error);
             return false;
         }
+    },
+
+    getByID: async (MaTK) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaTK', sql.Int);
+            await ps.prepare('SELECT * FROM TAI_KHOAN WHERE MaTK = @MaTK');
+            const result = await ps.execute({ MaTK: MaTK });
+            await ps.unprepare();
+            return result.recordset[0];
+        } catch (error) {
+            console.log('ERROR IN GETTING BY ID: ', error);
+        }
+    },
+
+    getAdvancedInfoByID: async (MaTK) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaTK', sql.Int);
+            await ps.prepare('SELECT TV.DiemTichLuyHienTai, TV.ThoiDiemThangHang FROM TAI_KHOAN TK JOIN THANH_VIEN TV ON TV.MaTV = TK.MaTV WHERE TK.MaTK = @MaTK');
+            const result = await ps.execute({ MaTK: MaTK });
+            await ps.unprepare();
+            return result.recordset[0];
+        } catch (error) {
+            console.log('ERROR IN GETTING BY ID: ', error);
+            return null;
+        }
     }
 }
 

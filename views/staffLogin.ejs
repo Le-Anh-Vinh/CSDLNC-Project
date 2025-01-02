@@ -363,6 +363,7 @@
                     const result = await response.json();
                     sessionStorage.setItem('user', JSON.stringify({ role: 'staff'}));
                     alert(result.message);
+                    window.location.href = '/employee';
                 } else {
                     const error = await response.json();
                     console.log(error);

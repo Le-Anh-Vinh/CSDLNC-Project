@@ -50,7 +50,18 @@ const deliveryData = {
         try {
             const ps = new sql.PreparedStatement();
             ps.input('MaCN', sql.Int);
-            await ps.prepare('SELECT * FROM PHIEU_TAN_NHA WHERE MaCNDat = @MaCN AND MaNVXacNhan IS NULL');
+            await ps.prepare(`SELECT * 
+                              FROM PHIEU_TAN_NHA PTN 
+                              WHERE PTN.MaCNDat = @MaCN AND 
+                              CAST(PTN.NgayLapPTN AS DATE) = CAST(GETDATE() AS DATE) AND
+                              PTN.MaNVXacNhan IS NULL
+                              UNION
+                              SELECT PTN.*
+                              FROM PHIEU_TAN_NHA PTN 
+                                JOIN HOA_DON_GIAO_TAN_NHA HDGTN ON PTN.MaPTN = HDGTN.MaPTNThanhToan
+                              WHERE PTN.MaCNDat = @MaCN AND 
+                              CAST(PTN.NgayLapPTN AS DATE) = CAST(GETDATE() AS DATE) AND
+                              HDGTN.HoanThanhThanhToan = 0`);
             const result = await ps.execute({ MaCN });
             await ps.unprepare();
             return result.recordset;
@@ -83,7 +94,21 @@ const deliveryData = {
             await ps.unprepare();
             return result.recordset;
         } catch (error) {
-            console.log('ERROR IN GETTING INVOICE BY CUSTOMER: ', error);
+            console.log('ERROR IN GETTING ORDER BY CUSTOMER: ', error);
+            return null;
+        }
+    },
+
+    getByID: async (MaPTN) => { 
+        try {
+            const ps = new sql.PreparedStatement();
+            ps.input('MaPTN', sql.Int);
+            await ps.prepare('SELECT * FROM PHIEU_TAN_NHA WHERE MaPTN = @MaPTN');
+            const result = await ps.execute({ MaPTN });
+            await ps.unprepare();
+            return result.recordset[0];
+        } catch (error) {
+            console.log("ERROR IN GETTING ORDER BY ID: ", error);
             return null;
         }
     },

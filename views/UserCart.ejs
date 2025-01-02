@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/UserCart.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="shopping-cart">
+        <!-- Title -->
+        <div class="title">
+          Shopping Cart
+        </div>
+
+        <div class="nav-bar">
+          <label class="product_name">Name</label>
+          <label class="product_unit-price">Unit price</label>
+          <label class="product_quantity">Quantity</label>
+          <label class="product_price">Price</label>
+        </div>
+        <% products.forEach((item) => { %>
+          <div class="item" data-product-id="<%= item.dishID %>">
+
+              <div class="description">
+                <span><%= item.name.length > 20 ? item.name.slice(0, 20) + '...' : item.name %></span>
+                <!-- <span>Pizza</span> -->
+              </div>
+              
+              <div class="unit-price">
+                <%= item.unitPrice %> VNĐ
+                <!-- 100000 VNĐ -->
+              </div>
+
+              <div class="quantity">
+  
+                  <input type="text" name="name" value="<%= item.quantity %>">
+                  <!-- <input type="text" name="name" value="1"> -->
+  
+              </div>
+              <div class="total-price"><%= item.unitPrice * item.quantity %> VNĐ</div>
+              <!-- <div class="total-price">100000 VNĐ</div> -->
+          
+              <div class="buttons">
+                  <span class="delete-btn"></span>
+              </div>
+          </div>
+        <% }); %>
+        <div class="confirm-section">
+          <div class="confirm-section__price">
+            <div class="label">TOTAL PRICE (0 Products)</div>
+            <div class="final-price">0 VNĐ</div>
+          </div>
+          <div class="confirm-section__btn">
+            <button class="checkout-button">PURCHASE</button>
+          </div>
+        </div>
+      </div>
+    <div id="purchaseModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="purchaseForm">
+          <!-- Your form fields here -->
+          <label for="address">Address:</label>
+          <input type="text" id="address" name="address" required><br><br>
+          <label for="phone">Phone:</label>
+          <input type="text" id="phone" name="phone" required><br><br>
+          <label for="note">Note:</label>
+          <textarea id="note" name="note"></textarea><br><br>
+          <button type="button" onclick="sendCheckoutRequest()">Submit</button>
+        </form>
+      </div>
+    </div>
+</body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  // tính tổng tiền
+  function updateTotalPrice() {
+    let total = 0;
+
+    const items = document.querySelectorAll('.item');
+
+    items.forEach(item => {
+      const priceElement = item.querySelector('.total-price');
+      if (priceElement) {
+        const priceText = priceElement.textContent;
+        const priceValue = parseFloat(priceText.replace(/[^0-9]/g, '')) || 0; // Extract numerical value
+        total += priceValue;
+      }
+    });
+
+    const totalPriceElement = document.querySelector('.final-price');
+    const totalProductsLabel = document.querySelector('.label');
+
+    totalPriceElement.textContent = `${total.toLocaleString()} VNĐ`;
+    totalProductsLabel.textContent = `TOTAL PRICE (${items.length} Products)`;
+  }
+
+  async function sendDeleteRequest(productId) {
+    try {
+      const response = await fetch('/cart', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete the product.');
+      }
+
+      console.log('Product deleted successfully.');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  // khi nhấn nút xóa, gửi thông báo lên server và tính lại tổng tiền
+  const deleteButtons = document.querySelectorAll('.delete-btn');
+
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      const item = button.closest('.item');
+
+      if (item) {
+        const productId = item.getAttribute('data-product-id');
+
+        if (productId) {
+          sendDeleteRequest(productId);
+        }
+
+        item.remove();
+        updateTotalPrice();
+      }
+    });
+  });
+
+  const checkoutButton = document.querySelector('.checkout-button');
+  const purchaseModal = document.getElementById('purchaseModal');
+  const closeModal = document.querySelector('.modal .close');
+
+  checkoutButton.addEventListener('click', function () {
+    purchaseModal.style.display = 'block';
+  });
+
+  closeModal.addEventListener('click', function () {
+    purchaseModal.style.display = 'none';
+  });
+
+  //window.addEventListener('click', function (event) {
+  //  if (event.target == purchaseModal) {
+  //    purchaseModal.style.display = 'none';
+  //  }
+  //});
+
+  
+
+  updateTotalPrice();
+});
+
+
+async function sendCheckoutRequest() {
+  try {
+    const address = document.getElementById('address').value;
+    const phone = document.getElementById('phone').value;
+    const note = document.getElementById('note').value;
+    const user = JSON.parse(sessionStorage.getItem('user'));
+
+    const response = await fetch('/delivery', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({Address: address, Phone: phone, Note: note, MaTK: user.MaTK.user, MaCN: 1}),
+    });
+
+    if(response.ok) {
+      const user = JSON.parse(sessionStorage.getItem('user'));
+      alert('Checkout successful!');
+      window.location.href = `/user/`;
+    } else {
+      throw new Error('Failed to checkout.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+</script>
+
+
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+
+        if (!user) {
+            window.location.href = '/auth';
+        } else {
+            console.log('User ID:', user.uid);
+            console.log('User Role:', user.role);
+        }
+    });
+</script> -->
+
+</html>

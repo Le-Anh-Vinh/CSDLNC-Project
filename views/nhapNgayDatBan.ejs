@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date and Time Input</title>
+  <link rel="stylesheet" href="/style/nhapNgayDatBan.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Reservation Information</h1>
+    <form id="datetime-form">
+      <!-- Date Input -->
+      <div class="form-group">
+        <label for="date">Select Date:</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+
+      <!-- Time Input -->
+      <div class="form-group">
+        <label for="time">Select Time:</label>
+        <input type="time" id="time" name="time" required>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('datetime-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      // Lấy giá trị ngày và thời gian
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
+
+      if (date && time) {
+        // Tạo URL 
+        const url = `/booking?date=${encodeURIComponent(date)}&time=${encodeURIComponent(time)}`;
+
+        // Chuyển hướng đến URL
+        window.location.href = url;
+      } else {
+        alert('Please fill in both date and time.');
+      }
+    });
+  </script>
+</body>
+</html>

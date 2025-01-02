@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/staffCart.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="shopping-cart">
+        <!-- Title -->
+        <div class="title">
+            Cart
+        </div>
+
+        <div class="nav-bar">
+          <label class="product_name">Name</label>
+          <label class="product_unit-price">Unit price</label>
+          <label class="product_quantity">Quantity</label>
+          <label class="product_price">Price</label>
+        </div>
+
+        <% products.forEach((item) => { %>
+          <div class="item" data-product-id="<%= item.dishID %>">
+
+              <div class="description">
+                <span><%= item.name.length > 20 ? item.name.slice(0, 20) + '...' : item.name %></span>
+                <!-- <span>Pizza</span> -->
+              </div>
+              
+              <div class="unit-price">
+                <%= item.unitPrice %> VNĐ
+                <!-- 100000 VNĐ -->
+              </div>
+
+              <div class="quantity">
+  
+                  <input type="text" name="name" value="<%= item.quantity %>">
+                  <!-- <input type="text" name="name" value="1"> -->
+  
+              </div>
+              <div class="total-price"><%= item.unitPrice * item.quantity %> VNĐ</div>
+              <!-- <div class="total-price">100000 VNĐ</div> -->
+          
+              <div class="buttons">
+                  <span class="delete-btn"></span>
+              </div>
+          </div>
+        <% }); %>
+        <div class="confirm-section">
+          <div class="confirm-section__price">
+            <div class="label">TOTAL PRICE (0 Products)</div>
+            <div class="final-price">0 VNĐ</div>
+          </div>
+          <div class="confirm-section__btn">
+            <button class="addToOrder-btn">ADD TO AN ORDER</button>
+            <button class="createOrder-btn">CREATE A NEW ORDER</button>
+          </div>
+        </div>
+
+        <div class="overlay"></div>
+        <div class="popup">
+            <div class="popup-content">
+                <!-- Content will be injected dynamically -->
+            </div>
+            <button class="close-popup">Close</button>
+        </div>
+      </div>
+</body>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+  // tính tổng tiền
+  function updateTotalPrice() {
+    let total = 0;
+
+    const items = document.querySelectorAll('.item');
+
+    items.forEach(item => {
+      const priceElement = item.querySelector('.total-price');
+      if (priceElement) {
+        const priceText = priceElement.textContent;
+        const priceValue = parseFloat(priceText.replace(/[^0-9]/g, '')) || 0; // Extract numerical value
+        total += priceValue;
+      }
+    });
+
+    const totalPriceElement = document.querySelector('.final-price');
+    const totalProductsLabel = document.querySelector('.label');
+
+    totalPriceElement.textContent = `${total.toLocaleString()} VNĐ`;
+    totalProductsLabel.textContent = `TOTAL PRICE (${items.length} Products)`;
+  }
+
+  async function sendDeleteRequest(productId) {
+    try {
+      const response = await fetch('/delete-product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete the product.');
+      }
+
+      console.log('Product deleted successfully.');
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  // khi nhấn nút xóa, gửi thông báo lên server và tính lại tổng tiền
+  const deleteButtons = document.querySelectorAll('.delete-btn');
+
+  deleteButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      const item = button.closest('.item');
+
+      if (item) {
+        const productId = item.getAttribute('data-product-id');
+
+        if (productId) {
+          sendDeleteRequest(productId);
+        }
+
+        item.remove();
+        updateTotalPrice();
+      }
+    });
+  });
+
+  updateTotalPrice();
+});
+
+
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const overlay = document.querySelector('.overlay');
+    const popup = document.querySelector('.popup');
+    const popupContent = document.querySelector('.popup-content');
+    const closePopupButton = document.querySelector('.close-popup');
+
+    function showPopup(content) {
+        popupContent.innerHTML = content;
+        overlay.style.display = 'block';
+        popup.style.display = 'block';
+    }
+
+    function hidePopup() {
+        overlay.style.display = 'none';
+        popup.style.display = 'none';
+    }
+
+    // lấy danh sách order từ server
+    async function fetchOrders() {
+        try {
+            const response = await fetch('/get-orders'); // Thay bằng API đúng
+            if (!response.ok) {
+                throw new Error('Failed to fetch orders.');
+            }
+            const orders = await response.json();
+            return orders;
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+            return [];
+        }
+    }
+
+    // Gửi thông tin tạo order lên server
+    async function createNewOrder(staffId, tableNumber, branch) {
+        try {
+            const response = await fetch('/spot', { // Thay bằng  API của bạn
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ MaCN: branch, SoBan: tableNumber, MaNVTaoPhieu: staffId}),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create order.');
+            } else {
+              const result = await response.json();
+              alert(`Order created successfully: ${result.message}`);
+              hidePopup();
+              window.location.reload();
+            }
+        } catch (error) {
+            console.error('Error creating order:', error);
+            alert('Failed to create order.');
+        }
+    }
+
+    // Gửi thông tin order đã chọn lên server
+    async function selectOrder(orderId) {
+        try {
+            const response = await fetch(`/spot/${orderId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to add dishes to order.');
+            } else {
+              const result = await response.json();
+              alert(`Dishes added successfully: ${result.message}`);
+              hidePopup();
+              window.location.href = '/employee';
+            }
+        } catch (error) {
+            console.error('Error selecting order:', error);
+            alert('Failed to select the order.');
+        }
+    }
+
+    //hiển thị danh sách order
+    document.querySelector('.addToOrder-btn').addEventListener('click', async function () {
+        // const orders = await fetchOrders();
+        const orders = JSON.parse(`<%- JSON.stringify(orders) %>`);
+        let content = '<h3>Available Orders</h3>';
+        if (orders.length > 0) {
+            content += '<ul>';
+            orders.forEach(order => {
+                content += `<li class="order-item" data-order-id="${order.MaPGM}">
+                                Order ID: ${order.MaPGM}, Table: ${order.SoBan}
+                            </li>`;
+            });
+            content += '</ul>';
+        } else {
+            content += '<p>No orders available.</p>';
+        }
+        showPopup(content);
+
+        // Thêm sự kiện click cho từng order
+        document.querySelectorAll('.order-item').forEach(item => {
+            item.addEventListener('click', function () {
+                const orderId = item.getAttribute('data-order-id');
+                if (orderId) {
+                    selectOrder(orderId);
+                }
+            });
+        });
+    });
+
+    // hiển thị form tạo order mới
+    document.querySelector('.createOrder-btn').addEventListener('click', function () {
+      const content = `
+          <h3>Create a New Order</h3>
+          <form id="create-order-form">
+              <label for="staff-id">Staff ID:</label>
+              <input type="text" id="staff-id" name="staff-id" required>
+              
+              <label for="table-number">Table Number:</label>
+              <select id="table-number" name="table-number">
+                  <% tables.forEach(table => { %>
+                      <option value="<%= table.SoBan %>">Table <%= table.SoBan %></option>
+                  <% }); %>
+              </select>
+              
+              <button type="submit">Submit</button>
+          </form>
+      `;
+        showPopup(content);
+         // Thêm sự kiện submit cho form
+         document.getElementById('create-order-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const staffId = document.getElementById('staff-id').value;
+            const tableNumber = document.getElementById('table-number').value;
+            const branch = 1;
+
+            createNewOrder(staffId, tableNumber, branch);
+        });
+    });
+
+    closePopupButton.addEventListener('click', hidePopup);
+    overlay.addEventListener('click', hidePopup);
+});
+
+</script>
+</html>
