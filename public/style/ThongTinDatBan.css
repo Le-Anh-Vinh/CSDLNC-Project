@@ -1,0 +1,227 @@
+html,
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background: linear-gradient(45deg, #d1b6f5, rgb(120, 135, 209));
+    font-family: 'Roboto', sans-serif;
+  }
+
+.menu-list {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 50px auto;
+    background-color: #ffffffac;
+    border-radius: 15px;
+  }
+  
+  .menu-item {
+    display: flex;
+    width: 90%;
+    margin: auto;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid black;
+    padding: 15px 20px; 
+    text-decoration: none;
+    color: black;
+    font-family: Arial, sans-serif;
+    border-radius: 15px; 
+    background-color: #f9f9f9; 
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    font-size: 1.2rem; 
+  }
+  
+  .menu-item:hover {
+    background-color: #e6e6e6; 
+    transform: scale(1.05); 
+  }
+  
+  .dish-name {
+    font-weight: bold;
+    text-align: left;
+    flex: 1;
+  }
+  
+  .dish-description {
+    text-align: center;
+    flex: 2;
+  }
+  
+  .dish-price {
+    text-align: right;
+    font-weight: bold;
+    flex: 1;
+  }
+
+  .quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 40px;
+  }
+  
+  .quantity-control button {
+    border: 1px solid black;
+    background-color: #f0f0f0;
+    font-size: 1rem;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .quantity-control button:hover {
+    background-color: #dcdcdc;
+  }
+  
+  .quantity {
+    font-size: 1.2rem;
+    font-weight: bold;
+    width: 30px;
+    text-align: center;
+  }
+  
+  .Table-list {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 30px auto;
+    background-color: #ffffffac;
+    border-radius: 15px;
+  }
+  
+  .table-option {
+    display: flex;
+    width: 90%;
+    margin: auto;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid black;
+    padding: 15px 20px; 
+    text-decoration: none;
+    color: black;
+    font-family: Arial, sans-serif;
+    border-radius: 15px; 
+    background-color: #f9f9f9; 
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    font-size: 1.2rem; 
+  }
+  
+  .table-option:hover {
+    background-color: #e6e6e6; 
+    transform: scale(1.05); 
+  }
+
+  .table-option.selected {
+    background-color: #caff80;
+}
+
+  h3{
+    margin: auto;
+    padding-top: 10px;
+    font-size: 20px;
+  }
+
+  .confirm-section {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 30px auto;
+    background-color: #ffffffac;
+    border-radius: 15px;
+  }
+
+  .confirm-section__price{
+    margin: auto;
+    position: relative;
+    padding: 10px 0;
+  }
+
+  .final-price{
+    left: 42px;
+    position: relative;
+    padding-top: 10px;
+  }
+  
+  .confirm-section__btn{
+    margin: auto;
+    position: relative;
+    padding-bottom: 14px;
+    width: 80%;
+    height: 45px;
+  }
+  
+  .checkout-button{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: #e6d5fcc1;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  
+  .checkout-button:hover{
+    background-color: #d4b9f8c1;
+  }
+
+  .overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+  .popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ede5ff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1100;
+    border-radius: 10px;
+  }
+  .popup h3 {
+    margin-top: 0;
+    padding-top: 0;
+    padding-bottom: 12px;
+  }
+  .popup button {
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: #d1bdff;
+    cursor: pointer;
+    border: 1px solid rgb(137, 137, 137);
+    width: 150px;
+    height: 30px;
+  }
+
+  .popup-btn{
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .popup button:hover {
+    background-color: #cab5fa;
+  }
+
+  input#customer-quantity{
+    position: relative;
+    left: 20px;
+  }
+
+  input#customer-note{
+    width: 100%;
+  }
