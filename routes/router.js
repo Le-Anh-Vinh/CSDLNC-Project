@@ -74,5 +74,5 @@ router.post('/evaluation/spot', evaluationController.addOnTheSpot); // add evalu
 router.get('/getDate', spotController.getDateBooking); // get non booked tables of an agency
 router.get('/booking', spotController.getBooking); // get non booked tables of an agency in a date
 router.post('/booking', spotController.bookTable); // book a table for a customer
-
+router.get('/booked', spotController.getBooked); // get booked tables of an agency in a date
 export default router;

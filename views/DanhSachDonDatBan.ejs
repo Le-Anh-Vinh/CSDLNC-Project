@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style/DanhSachDonDatBan.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="shopping-cart">
+        <!-- Title -->
+        <div class="title">
+          Table Reservation List
+        </div>
+
+        <div class="nav-bar">
+          <label class="Reservation_nav_id">Reservation Table</label>
+          <label class="Reservation_nav_date">Reservation Date</label>
+        </div>
+        
+        <% Reservation_list.forEach((reservation) => { %>
+          <div class="order" reservation-id="<%= reservation.MaPBD %>">
+              <div class="Reservation_id">
+                <span><%= reservation.SoBan %></span>
+                 <!-- 2 -->
+              </div>
+              <div class="Reservation_date">
+                <%= reservation.GioDen %>
+                 <!-- 02/01/2025, 18:00 -->
+              </div>
+          </div>
+        <% }); %>
+    </div>
+    
+    
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        
+        if (!user) {
+            window.location.href = '/auth';
+            } else {
+                console.log('User ID:', user.uid);
+                console.log('User Role:', user.role);
+                }
+        });
+    </script> -->
+                
+</body>
+</html>
